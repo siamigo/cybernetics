@@ -79,7 +79,8 @@ void loop()
     sensor_values.concat(accel[0]); sensor_values.concat(",");
     sensor_values.concat(accel[1]); sensor_values.concat(",");
     sensor_values.concat(accel[2]); sensor_values.concat(",");
-    sensor_values.concat(d);
+    sensor_values.concat(d); sensor_values.concat(",");
+    sensor_values.concat(millis());
 
     udp_server.read(packet_buffer, UDP_TX_PACKET_MAX_SIZE);
     float estimate = String(packet_buffer).toFloat();
