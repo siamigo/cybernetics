@@ -1,14 +1,16 @@
 from statistics import variance
 import numpy as np
+
+# If you plan to do anything else then adding more [[],...,[]] then don't.
 def readFile(filename):
     data_raw = np.loadtxt(filename, delimiter=',', skiprows=0, dtype=float)
-    data=[[],[],[]]
+    data=[[], [], []]
     for i in range(0, len(data_raw[0])):
         data[i]=data_raw[:,i]
     return data
 
 def sensorError(sensor_raw):
-    sensor_error = np.empty((len(sensor_raw),1), float)
+    sensor_error = np.empty((len(sensor_raw),1), dtype=float)
     for i in range(0,len(sensor_raw)):
         sensor_error[i]=np.sum(np.subtract(sensor_raw[i], 1))/len(sensor_raw[i])
     return sensor_error
