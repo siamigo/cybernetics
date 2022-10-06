@@ -33,13 +33,11 @@ def kalmanFilter(X, P, A, Q, B, U):
     X = dot(A, X) #+ dot(B, U)
     P = dot(A, dot(P, A.T)) + Q
     return(X,P)
-acc_x, acc_y, acc_z = readFile('accCalib.txt')
-print(calibrateAccelerometer(acc_x, acc_y, acc_z))
 
-# dt = 0.5 #Give it an actually value
-# variance2 = 15 #Give it an actually value
+dt = 0.5 #Give it an actually value
+variance2 = 15 #Give it an actually value
 
-# X = array([[0.0], [0.0], [0.0]])
-# P = diag((0.0, 0.0, 0.0))
-# A = array([[1, dt, 0.5*(dt**2)], [0.0, 1., dt], [0.0, 0.0, 1]]) 
-# Q = array[[(dt**6)/36, (dt**5)/12, (dt**4)/6], [(dt**5)/12, (dt**4)/6, (dt**3)/2], [(dt**4)/6, (dt**3)/2, dt**2]]*variance2
+X = array([[0.0], [0.0], [0.0]])
+P = diag((0.0, 0.0, 0.0))
+A = array([[1, dt, 0.5*(dt**2)], [0.0, 1., dt], [0.0, 0.0, 1]]) 
+Q = array[[(dt**6)/36, (dt**5)/12, (dt**4)/6], [(dt**5)/12, (dt**4)/6, (dt**3)/2], [(dt**4)/6, (dt**3)/2, dt**2]]*variance2
