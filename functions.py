@@ -15,13 +15,12 @@ def sensorError(sensor_raw):
         avrage = np.average(sensor_raw[i])
         sensor_error.append(avrage-int(avrage))
     return sensor_error
-
-def getTotalAcceleration(sensor_raw, sensor_error):
-    sensor_value=sensor_raw-sensor_error
-    acc_x, acc_y, acc_z = sensor_value
+# Gives total acceleration from raw data.
+def getTotalAcceleration(acc_raw, acc_error):
+    acc_corr=acc_raw-acc_error
+    acc_x, acc_y, acc_z = acc_corr
     acc_tot = np.sqrt(acc_x*acc_x+acc_y*acc_y+acc_z*acc_z)
     return acc_tot
-
 # Function taken from Implementation of Kalman Filter with Python Language  by Mohamed LAARAIEDH
 def kalmanFilter(X, P, A, Q, B, U):
     X = np.dot(A, X) + np.dot(B, U)
