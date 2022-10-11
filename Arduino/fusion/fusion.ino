@@ -1,6 +1,8 @@
 #include <HardWire.h>
 #include <VL53L0X.h>
 #include <I2C_MPU6886.h>
+#include <AVR_RTC.h>
+#include <util/atomic.h>
 
 #include <Ethernet.h>
 #include <EthernetUdp.h>
@@ -15,12 +17,23 @@ EthernetUDP udp_server;
 
 char packet_buffer[UDP_TX_PACKET_MAX_SIZE];
 
+#define ENCA 2
+#define ENCB 3
+volatile int posi = 0;
+
+unsigned int oldT = 0;
+unsigned int dt = 1;
+
 void setup() 
 {
   Serial.begin(115200);
   Wire.begin();
   Ethernet.begin(mac, ip);
   delay(500);
+
+  pinMode(ENCA,INPUT);
+  pinMode(ENCB,INPUT);
+  attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
   
   if(!initialize())
      while(true)
@@ -69,17 +82,29 @@ void loop()
     float gyro[3];
     float t;
     float d;
+
+    int pos = 0;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+    pos = posi;
+    } 
+
+    float angle = (360./1024.)*pos;
+    unsigned int T = millis();
+    dt = T - oldT;
+    oldT = millis();
   
     imu.getAccel(&accel[0], &accel[1], &accel[2]);
     imu.getGyro(&gyro[0], &gyro[1], &gyro[2]);
     imu.getTemp(&t);
     d = range_sensor.readRangeContinuousMillimeters();
-
+    
     String sensor_values;
+    sensor_values.concat(angle); sensor_values.concat(",");
     sensor_values.concat(accel[0]); sensor_values.concat(",");
     sensor_values.concat(accel[1]); sensor_values.concat(",");
     sensor_values.concat(accel[2]); sensor_values.concat(",");
-    sensor_values.concat(d);
+    sensor_values.concat(d); sensor_values.concat(",");
+    sensor_values.concat(dt);
 
     udp_server.read(packet_buffer, UDP_TX_PACKET_MAX_SIZE);
     float estimate = String(packet_buffer).toFloat();
@@ -88,28 +113,7 @@ void loop()
     udp_server.beginPacket(udp_server.remoteIP(), udp_server.remotePort());
     udp_server.write(sensor_values.c_str(), sensor_values.length());
     udp_server.endPacket();
-/**
-    printVector3('A', accel);
-    printVector3('G', gyro);
-    printScalar('T', t);
-    printScalar('D', d);
-    printPackageMetaInfo(packet_size);
-**/
   }
-}
-
-void printVector3(char label, float *vector)
-{
-  Serial.print(label); Serial.print(" = ");
-  Serial.print(vector[0] > 0.0 ? " " : "");Serial.print(vector[0]);Serial.print(",    \t");
-  Serial.print(vector[1] > 0.0 ? " " : "");Serial.print(vector[1]);Serial.print(",    \t");
-  Serial.print(vector[2] > 0.0 ? " " : "");Serial.println(vector[2]);
-}
-
-void printScalar(char label, float scalar)
-{
-  Serial.print(label); Serial.print(" = ");
-  Serial.print(scalar > 0.0 ? " " : "");Serial.println(scalar);
 }
 
 void printPackageMetaInfo(int packet_size)
@@ -126,4 +130,14 @@ void printPackageMetaInfo(int packet_size)
   }
   Serial.print(", port ");
   Serial.println(udp_server.remotePort());
+}
+
+void readEncoder(){
+  int b = digitalRead(ENCB);
+  if(b > 0){
+    posi++;
+  }
+  else{
+    posi--;
+  }
 }
