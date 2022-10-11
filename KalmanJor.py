@@ -1,4 +1,14 @@
+import time
+from socket import *
 import numpy as np
+
+udp_socket = socket(AF_INET, SOCK_DGRAM)
+udp_socket.settimeout(1)
+
+np.set_printoptions(suppress = True)
+
+arduino_ip = '192.168.10.240'
+arduino_port = 8888
 
 dt = 0.1
 
@@ -47,7 +57,7 @@ def kalman_predict_P(Ad, P_km1):
     return P_kd
 
 def kalman_gain(P_kd, Hd, Rd):
-    num = np.dot(P_kd * np.transpose(Hd))
+    num = np.dot(P_kd, np.transpose(Hd))
     den = np.linalg.inv(np.dot(np.dot(Hd, P_kd), np.transpose(Hd)) + Rd)
     Kk = np.dot(num, den)
     return Kk
@@ -57,7 +67,7 @@ def kalman_newstate(x_km1, Kk, zk, Hd):
     return x_kd
 
 def kalman_newerror(Kk, Hd, P_km1):
-    I = np.identity(np.sHdape(Hd)[1])
+    I = np.identity(np.shape(Hd)[1])
     P_kd = np.dot((I - np.dot(Kk, Hd), P_km1))
     return P_kd
 
@@ -66,11 +76,11 @@ def cal_covar(dList, vList, aList):
     v_var = np.var(vList)
     a_var = np.var(aList)
 
-    R = np.array([[d_var, d_var*v_var, d_var*a_var], 
+    Rd = np.array([[d_var, d_var*v_var, d_var*a_var], 
                   [v_var*d_var, v_var, v_var*a_var], 
                   [a_var*d_var, a_var*v_var, a_var]])
     
-    return R
+    return Rd
 
 """
 while True:

@@ -15,4 +15,8 @@ def cal_covar(dList, vList, aList):
     
     return R
 
-print(cal_covar(dValues, vValues, aValues))
+x0 = np.transpose(np.array([[1, 2, 3]]))
+
+print(x0[0])
+x0[0] = 10
+print(x0[0])
