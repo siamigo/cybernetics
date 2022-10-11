@@ -10,19 +10,6 @@ np.set_printoptions(suppress = True)
 arduino_ip = '192.168.10.240'
 arduino_port = 8888
 
-dt = 0.1
-
-x0 = np.transpose(np.array([[0, 0, 1]]))
-P0 = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-
-A = np.array([[1, dt, 0.5*(dt**2)], [0.0, 1., dt], [0.0, 0.0, 1]]) 
-H = np.array([[1, 0, 1]])
-R = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-x = x0
-P_k = P0
-
-Y = np.dot(H, x)
-
 def arduino_send_receive(estimate):
     udp_socket.sendto(str(estimate).encode(), (arduino_ip, arduino_port))
     try:
