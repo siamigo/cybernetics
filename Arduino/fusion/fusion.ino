@@ -21,6 +21,9 @@ char packet_buffer[UDP_TX_PACKET_MAX_SIZE];
 #define ENCB 3
 volatile int posi = 0;
 
+unsigned int oldT = 0;
+unsigned int dt = 1;
+
 void setup() 
 {
   Serial.begin(115200);
@@ -86,6 +89,9 @@ void loop()
     } 
 
     float angle = (360./1024.)*pos;
+    unsigned int T = millis();
+    dt = T - oldT;
+    oldT = millis();
   
     imu.getAccel(&accel[0], &accel[1], &accel[2]);
     imu.getGyro(&gyro[0], &gyro[1], &gyro[2]);
@@ -96,7 +102,7 @@ void loop()
     sensor_values.concat(angle); sensor_values.concat(",");
     sensor_values.concat(accel[2]); sensor_values.concat(",");
     sensor_values.concat(d); sensor_values.concat(",");
-    sensor_values.concat(millis());
+    sensor_values.concat(dt);
 
     udp_server.read(packet_buffer, UDP_TX_PACKET_MAX_SIZE);
     float estimate = String(packet_buffer).toFloat();
@@ -143,4 +149,14 @@ void printPackageMetaInfo(int packet_size)
   }
   Serial.print(", port ");
   Serial.println(udp_server.remotePort());
+}
+
+void readEncoder(){
+  int b = digitalRead(ENCB);
+  if(b > 0){
+    posi++;
+  }
+  else{
+    posi--;
+  }
 }

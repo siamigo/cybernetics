@@ -35,7 +35,7 @@ def kalman_newerror(Kk, Hd, P_km1):
     I = np.identity(np.sHdape(Hd)[1])
     P_kd = np.dot((I - np.dot(Kk, Hd), P_km1))
     return P_kd
-
+"""
 while True:
     x_kp = kalman_predict_x(A, x)
     P_kp = kalman_predict_P(A, P_k)
@@ -43,4 +43,4 @@ while True:
     K = kalman_gain(P_kp, H, R)
     x = kalman_newstate(x_kp, K, Y, H)
     P_k = kalman_newerror(K, H, P_kp)
-    
+    """
