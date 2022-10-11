@@ -10,6 +10,8 @@ np.set_printoptions(suppress = True)
 arduino_ip = '192.168.10.240'
 arduino_port = 8888
 
+ar = 0.004 # axle radius
+dt = 0
 
 def arduino_send_receive(estimate):
     udp_socket.sendto(str(estimate).encode(), (arduino_ip, arduino_port))
@@ -22,9 +24,12 @@ def arduino_send_receive(estimate):
         print(e)
 
 
-def use_sensor_values_for_something(sensor_values):
-    print(sensor_values)
-
+def import_sensor_values(sensorV, r, deltaT):
+    w = sensorV[0] / deltaT
+    v = w * r
+    a = sensorV[1]
+    d = sensorV[2]
+    return d, v, a
 
 def arduino_has_been_reset():
     print("Arduino is offline.. Resetting")
@@ -33,6 +38,7 @@ def arduino_has_been_reset():
 estimate = 0.0
 delta = 1.0
 while(True):
+    dt -= sensor_values[3]
     estimate = estimate + delta
     if(estimate > 100.0):
         delta = -1
@@ -41,7 +47,6 @@ while(True):
 
     sensor_values = arduino_send_receive(estimate)
     if(sensor_values is not None):
-        use_sensor_values_for_something(sensor_values)
+        import_sensor_values(sensor_values)
     else:
         arduino_has_been_reset()
-

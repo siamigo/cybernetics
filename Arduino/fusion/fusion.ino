@@ -1,6 +1,8 @@
 #include <HardWire.h>
 #include <VL53L0X.h>
 #include <I2C_MPU6886.h>
+#include <AVR_RTC.h>
+#include <util/atomic.h>
 
 #include <Ethernet.h>
 #include <EthernetUdp.h>
@@ -15,12 +17,20 @@ EthernetUDP udp_server;
 
 char packet_buffer[UDP_TX_PACKET_MAX_SIZE];
 
+#define ENCA 2
+#define ENCB 3
+volatile int posi = 0;
+
 void setup() 
 {
   Serial.begin(115200);
   Wire.begin();
   Ethernet.begin(mac, ip);
   delay(500);
+
+  pinMode(ENCA,INPUT);
+  pinMode(ENCB,INPUT);
+  attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
   
   if(!initialize())
      while(true)
@@ -69,6 +79,13 @@ void loop()
     float gyro[3];
     float t;
     float d;
+
+    int pos = 0;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+    pos = posi;
+    } 
+
+    float angle = (360./1024.)*pos;
   
     imu.getAccel(&accel[0], &accel[1], &accel[2]);
     imu.getGyro(&gyro[0], &gyro[1], &gyro[2]);
@@ -76,8 +93,7 @@ void loop()
     d = range_sensor.readRangeContinuousMillimeters();
 
     String sensor_values;
-    sensor_values.concat(accel[0]); sensor_values.concat(",");
-    sensor_values.concat(accel[1]); sensor_values.concat(",");
+    sensor_values.concat(angle); sensor_values.concat(",");
     sensor_values.concat(accel[2]); sensor_values.concat(",");
     sensor_values.concat(d); sensor_values.concat(",");
     sensor_values.concat(millis());
