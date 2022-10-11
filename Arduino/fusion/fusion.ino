@@ -19,6 +19,7 @@ char packet_buffer[UDP_TX_PACKET_MAX_SIZE];
 
 #define ENCA 2
 #define ENCB 3
+
 volatile int posi = 0;
 
 unsigned int oldT = 0;

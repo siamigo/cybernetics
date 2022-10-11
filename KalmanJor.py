@@ -13,6 +13,31 @@ P_k = P0
 
 Y = np.dot(H, x)
 
+def arduino_send_receive(estimate):
+    udp_socket.sendto(str(estimate).encode(), (arduino_ip, arduino_port))
+    try:
+        inbound_message, remote_address = udp_socket.recvfrom(1024)
+        # returns an array with the following values
+        # [accel_x, accel_y, accel_z, range_sensor]
+        return np.array(inbound_message.decode('ascii').split(',')).astype(float)
+    except Exception as e:
+        print(e)
+
+
+def conv_to_speed(sensorV, r, deltaT):
+    w = sensorV[0] / deltaT
+    v = w * r
+    a = sensorV[1]
+    d = sensorV[2]
+    return d, v, a
+
+def arduino_has_been_reset():
+    print("Arduino is offline.. Resetting")
+
+def readFile(filename):
+    data_raw = np.loadtxt(filename, delimiter=' ', skiprows=0, dtype=float)
+    return [data_raw[:,i] for i, _ in enumerate(data_raw[0])]
+
 def kalman_predict_x(Ad, x_km1, Bd, u_km1):
     x_kd = np.dot(Ad, x_km1) + np.dot(Bd, u_km1)
     return x_kd
@@ -35,6 +60,18 @@ def kalman_newerror(Kk, Hd, P_km1):
     I = np.identity(np.sHdape(Hd)[1])
     P_kd = np.dot((I - np.dot(Kk, Hd), P_km1))
     return P_kd
+
+def cal_covar(dList, vList, aList):
+    d_var = np.var(dList)
+    v_var = np.var(vList)
+    a_var = np.var(aList)
+
+    R = np.array([[d_var, d_var*v_var, d_var*a_var], 
+                  [v_var*d_var, v_var, v_var*a_var], 
+                  [a_var*d_var, a_var*v_var, a_var]])
+    
+    return R
+
 """
 while True:
     x_kp = kalman_predict_x(A, x)

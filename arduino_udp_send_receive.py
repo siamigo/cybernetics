@@ -2,7 +2,7 @@ import time
 from socket import *
 import numpy as np
 
-from KalmanJor import R
+from KalmanJor import *
 
 udp_socket = socket(AF_INET, SOCK_DGRAM)
 udp_socket.settimeout(1)
@@ -19,26 +19,15 @@ ar = 0.004 # axle radius
 dt = 0
 prevAngle = 0
 
-def arduino_send_receive(estimate):
-    udp_socket.sendto(str(estimate).encode(), (arduino_ip, arduino_port))
-    try:
-        inbound_message, remote_address = udp_socket.recvfrom(1024)
-        # returns an array with the following values
-        # [accel_x, accel_y, accel_z, range_sensor]
-        return np.array(inbound_message.decode('ascii').split(',')).astype(float)
-    except Exception as e:
-        print(e)
+dRaw, vRaw, aRaw = readFile('TestValues.txt')
+R = cal_covar(dRaw, vRaw, aRaw)
 
+x0 = np.transpose(np.array([[0, 0, 1]]))
 
-def conv_to_speed(sensorV, r, deltaT):
-    w = sensorV[0] / deltaT
-    v = w * r
-    a = sensorV[1]
-    d = sensorV[2]
-    return d, v, a
-
-def arduino_has_been_reset():
-    print("Arduino is offline.. Resetting")
+A = np.array([[1, dt, 0.5*(dt**2)], [0.0, 1., dt], [0.0, 0.0, 1]]) 
+H = np.array([[1, 1, 1]])
+x = x0
+P_k = R # Initially P matrix is same as R
 
 while(True):
     estimate = estimate + delta
@@ -47,16 +36,21 @@ while(True):
     elif(estimate < -100):
         delta = 1
 
+    x_kp = kalman_predict_x(A, x)
+    P_kp = kalman_predict_P(A, P_k)
+
     sensor_values = arduino_send_receive(estimate)
     if(sensor_values is not None):
-        v = round((sensor_values[0] - prevAngle) * ar, 3)
+        dt = sensor_values[3] * 10**(-3)
+        v = round(((sensor_values[0] - prevAngle) * ar) / dt, 3)
         a = sensor_values[1]
         d = sensor_values[2]
-        dt = sensor_values[3] * 10**(-3)
         
         prevAngle = sensor_values[0]
     else:
         arduino_has_been_reset()
 
-    print(d, v, a, dt)
-    
+    K = kalman_gain(P_kp, H, R)
+    x = kalman_newstate(x_kp, K, Y, H)
+    P_k = kalman_newerror(K, H, P_kp)
+  
