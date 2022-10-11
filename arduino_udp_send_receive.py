@@ -15,7 +15,7 @@ x0 = np.transpose(np.array([[0, 0, 1]]))
 x_k = x0
 x_km = x0
 
-A = np.array([[1, dt, 0.5*(dt**2)], [0.0, 1., dt], [0.0, 0.0, 1]]) 
+# A = np.array([[1, dt, 0.5*(dt**2)], [0.0, 1., dt], [0.0, 0.0, 1]]) 
 H = np.identity(len(A))
 B = 0
 u = 0
@@ -30,10 +30,16 @@ while(True):
     x_kp = kalman_predict_x(A, x_k, B, u)
     P_kp = kalman_predict_P(A, P_k)
 
+    print("Predicted x matrix: ")
+    print(x_kp)
+    print("Predicted P matrix: ")
+    print(P_kp)
+
     sensor_values = arduino_send_receive(estimate)
     if(sensor_values is not None):
-        dt = sensor_values[3] * 10**(-3)
-        v = round(((sensor_values[0] - prevAngle) * ar) / dt, 3)
+        dt = sensor_values[3] * 10**(-3); print(dt)
+        A = np.array([[1, dt, 0.5*(dt**2)], [0.0, 1., dt], [0.0, 0.0, 1]])
+        v = round((sensor_values[0] - prevAngle) * ar / dt, 3)
         a = sensor_values[1]
         d = sensor_values[2]
         
@@ -42,6 +48,13 @@ while(True):
         x_km[0] = d
         x_km[1] = v
         x_km[2] = a
+
+        print("Measured distance: ")
+        print(d)
+        print("Measured velocity: ")
+        print(v)
+        print("Measured acceleration: ")
+        print(a)
 
         Y = np.dot(H, x_km)
 
@@ -56,3 +69,5 @@ while(True):
     print(x_k)
     print("Updated P matrix: ")
     print(P_k)
+
+    t.sleep(1)

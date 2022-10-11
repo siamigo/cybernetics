@@ -1,4 +1,4 @@
-import time
+import time as t
 from socket import *
 import numpy as np
 
