@@ -1,5 +1,6 @@
 from KalmanJor import *
 
+DEBUG = True # Print values and add 1 second delay
 estimate = 0.0
 delta = 1.0
 
@@ -9,11 +10,10 @@ prevAngle = 0.0
 
 dRaw, vRaw, aRaw = readFile('TestValues.txt')
 R = cal_covar(dRaw, vRaw, aRaw)
-P_k = R # Initially P matrix is same as R
+P_km1 = np.array([[0, 0, 0],[0, 0, 0], [0, 0, 0]]) # Initial process covariance
 
-x0 = np.transpose(np.array([[0.0, 0.0, 1.0]]))
-x_k = x0
-x_km = x0
+x_km1 = np.transpose(np.array([[0.0, 0.0, 1.0]])) # Initial state
+x_kmes = x_km1
 
 # A = np.array([[1, dt, 0.5*(dt**2)], [0.0, 1., dt], [0.0, 0.0, 1]]) 
 H = np.identity(len(R))
@@ -37,10 +37,34 @@ while(True):
         
         prevAngle = sensor_values[0]
 
-        x_km[0] = d
-        x_km[1] = v
-        x_km[2] = a
+        # x measurements
+        x_kmes[0] = d
+        x_kmes[1] = v
+        x_kmes[2] = a
 
+        Yk = np.dot(H, x_kmes)
+
+        if DEBUG:
+            print("Measured distance: ")
+            print(d)
+            print("Measured velocity: ")
+            print(v)
+            print("Measured acceleration: ")
+            print(a)
+            print("Yk: ")
+            print(Yk)      
+
+    else:
+        arduino_has_been_reset()
+
+    x_kp = kalman_predict_x(A, x_km1, B, u)
+    P_kp = kalman_predict_P(A, P_km1)
+
+    if DEBUG:
+        print("Predicted x matrix: ")
+        print(x_kp)
+        print("Predicted P matrix: ")
+        print(P_kp)
         print("Measured distance: ")
         print(d)
         print("Measured velocity: ")
@@ -48,30 +72,17 @@ while(True):
         print("Measured acceleration: ")
         print(a)
 
-        Y = np.dot(H, x_km)
-
-    else:
-        arduino_has_been_reset()
-
-    x_kp = kalman_predict_x(A, x_k, B, u)
-    P_kp = kalman_predict_P(A, P_k)
-    print("Predicted x matrix: ")
-    print(x_kp)
-    print("Predicted P matrix: ")
-    print(P_kp)
-    print("Measured distance: ")
-    print(d)
-    print("Measured velocity: ")
-    print(v)
-    print("Measured acceleration: ")
-    print(a)
-
     K = kalman_gain(P_kp, H, R)
-    x_k = kalman_newstate(x_kp, K, Y, H)
+    
+    x_k = kalman_newstate(x_kp, K, Yk, H)
     P_k = kalman_newerror(K, H, P_kp)
-    print("Updated x matrix: ")
-    print(x_k)
-    print("Updated P matrix: ")
-    print(P_k)
 
-    t.sleep(1)
+    if DEBUG:
+        print("Updated x matrix: ")
+        print(x_k)
+        print("Updated P matrix: ")
+        print(P_k)
+        t.sleep(1)
+
+    x_km1 = x_k
+    P_km1 = P_k

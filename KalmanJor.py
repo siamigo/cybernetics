@@ -35,33 +35,33 @@ def readFile(filename):
     data_raw = np.loadtxt(filename, delimiter=' ', skiprows=0, dtype=float)
     return [data_raw[:,i] for i, _ in enumerate(data_raw[0])]
 
-def kalman_predict_x(Ad, x_km1, Bd, u_km1):
-    x_kd = np.dot(Ad, x_km1) + np.dot(Bd, u_km1)
+def kalman_predict_x(Ad, x_m1, Bd, u_km1):
+    x_kd = np.dot(Ad, x_m1) + np.dot(Bd, u_km1)
     return x_kd
 
-def kalman_predict_P(Ad, P_km1):
-    P_kd = np.dot(np.dot(Ad, P_km1), np.transpose(Ad))
+def kalman_predict_P(Ad, P_m1):
+    P_kd = np.dot(np.dot(Ad, P_m1), np.transpose(Ad))
     return P_kd
 
-def kalman_gain(P_kd, Hd, Rd):
-    num = np.dot(P_kd, np.transpose(Hd))
-    den = np.dot(np.dot(Hd, P_kd), np.transpose(Hd)) + Rd
-    kk = np.zeros(np.shape(P_kd))
-    for i in range(len(P_kd)):
-        for j in range(len(P_kd)):
+def kalman_gain(P_k, Hd, Rd):
+    num = np.dot(P_k, np.transpose(Hd))
+    den = np.dot(np.dot(Hd, P_k), np.transpose(Hd)) + Rd
+    kk = np.zeros(np.shape(P_k))
+    for i in range(len(P_k)):
+        for j in range(len(P_k)):
             if (num[i, j] or den[i, j]) == 0:
                 kk[i, j] = 0
             else:
                 kk[i, j] = num[i, j] / den[i, j]
     return kk
 
-def kalman_newstate(x_km1, Kk, zk, Hd):
-    x_kd = x_km1 + np.dot(Kk, (zk - np.dot(Hd, x_km1)))
+def kalman_newstate(x_m1, Kk, Yd, Hd):
+    x_kd = x_m1 + np.dot(Kk, (Yd - np.dot(Hd, x_m1)))
     return x_kd
 
-def kalman_newerror(Kk, Hd, P_km1):
+def kalman_newerror(Kk, Hd, P_k):
     I = np.identity(np.shape(Hd)[1])
-    P_kd = np.dot((I - np.dot(Kk, Hd)), P_km1)
+    P_kd = np.dot((I - np.dot(Kk, Hd)), P_k)
     return P_kd
 
 def cal_covar(dList, vList, aList):
