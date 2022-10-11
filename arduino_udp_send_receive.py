@@ -1,13 +1,5 @@
 from KalmanJor import *
-"""
-udp_socket = socket(AF_INET, SOCK_DGRAM)
-udp_socket.settimeout(1)
 
-np.set_printoptions(suppress = True)
-
-arduino_ip = '192.168.10.240'
-arduino_port = 8888
-"""
 estimate = 0.0
 delta = 1.0
 
@@ -24,7 +16,7 @@ x_k = x0
 x_km = x0
 
 A = np.array([[1, dt, 0.5*(dt**2)], [0.0, 1., dt], [0.0, 0.0, 1]]) 
-H = np.identity(np.shape(A)[0])
+H = np.identity(len(A))
 B = 0
 u = 0
 
@@ -60,9 +52,7 @@ while(True):
     x_k = kalman_newstate(x_kp, K, Y, H)
     P_k = kalman_newerror(K, H, P_kp)
     
-    print(x_k, P_k)
-
-    """
-    Note to self
-    Elementvis divison av num og den hvor hvis en er 0 så er produktet 0
-    """
+    print("Updated x matrix: ")
+    print(x_k)
+    print("Updated P matrix: ")
+    print(P_k)

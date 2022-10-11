@@ -58,9 +58,15 @@ def kalman_predict_P(Ad, P_km1):
 
 def kalman_gain(P_kd, Hd, Rd):
     num = np.dot(P_kd, np.transpose(Hd))
-    den = np.linalg.inv(np.dot(np.dot(Hd, P_kd), np.transpose(Hd)) + Rd)
-    Kk = np.dot(num, den)
-    return Kk
+    den = np.dot(np.dot(Hd, P_kd), np.transpose(Hd)) + Rd
+    kk = np.zeros(np.shape(P_kd))
+    for i in range(len(P_kd)):
+        for j in range(len(P_kd)):
+            if (num[i, j] or den[i, j]) == 0:
+                kk[i, j] = 0
+            else:
+                kk[i, j] = num[i, j] / den[i, j]
+    return kk
 
 def kalman_newstate(x_km1, Kk, zk, Hd):
     x_kd = x_km1 + np.dot(Kk, (zk - np.dot(Hd, x_km1)))
@@ -68,7 +74,7 @@ def kalman_newstate(x_km1, Kk, zk, Hd):
 
 def kalman_newerror(Kk, Hd, P_km1):
     I = np.identity(np.shape(Hd)[1])
-    P_kd = np.dot((I - np.dot(Kk, Hd), P_km1))
+    P_kd = np.dot((I - np.dot(Kk, Hd)), P_km1)
     return P_kd
 
 def cal_covar(dList, vList, aList):
@@ -77,17 +83,7 @@ def cal_covar(dList, vList, aList):
     a_var = np.var(aList)
 
     Rd = np.array([[d_var, d_var*v_var, d_var*a_var], 
-                  [v_var*d_var, v_var, v_var*a_var], 
-                  [a_var*d_var, a_var*v_var, a_var]])
+                   [v_var*d_var, v_var, v_var*a_var], 
+                   [a_var*d_var, a_var*v_var, a_var]])
     
     return Rd
-
-"""
-while True:
-    x_kp = kalman_predict_x(A, x)
-    P_kp = kalman_predict_P(A, P_k)
-
-    K = kalman_gain(P_kp, H, R)
-    x = kalman_newstate(x_kp, K, Y, H)
-    P_k = kalman_newerror(K, H, P_kp)
-    """
