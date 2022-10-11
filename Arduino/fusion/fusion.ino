@@ -101,7 +101,7 @@ void loop()
 
     String sensor_values;
     sensor_values.concat(angle); sensor_values.concat(",");
-    sensor_values.concat(accel[2]); sensor_values.concat(",");
+    sensor_values.concat(accel[2]*9.81); sensor_values.concat(",");
     sensor_values.concat(d); sensor_values.concat(",");
     sensor_values.concat(dt);
 

@@ -1,10 +1,11 @@
 from KalmanJor import *
 
-DEBUG = True # Print values and add 1 second delay
+DEBUG = True # Print values and add a delay
+delay = 1
 estimate = 0.0
 delta = 1.0
 
-ar = 0.004 # axle radius
+ar = 0.4 # axle radius
 dt = 0.0
 prevAngle = 0.0
 
@@ -12,10 +13,9 @@ dRaw, vRaw, aRaw = readFile('TestValues.txt')
 R = cal_covar(dRaw, vRaw, aRaw)
 P_km1 = np.array([[0, 0, 0],[0, 0, 0], [0, 0, 0]]) # Initial process covariance
 
-x_km1 = np.transpose(np.array([[0.0, 0.0, 1.0]])) # Initial state
+x_km1 = np.transpose(np.array([[0.0, 0.0, 0.0]])) # Initial state
 x_kmes = x_km1
-
-# A = np.array([[1, dt, 0.5*(dt**2)], [0.0, 1., dt], [0.0, 0.0, 1]]) 
+ 
 H = np.identity(len(R))
 B = 0.0
 u = 0.0
@@ -31,8 +31,8 @@ while(True):
     if(sensor_values is not None):
         dt = sensor_values[3] * 10**(-3)
         A = np.array([[1.0, dt, 0.5*(dt**2.0)], [0.0, 1.0, dt], [0.0, 0.0, 1.0]])
-        v = round((sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt, 3)
-        a = sensor_values[1]
+        v = round( (sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt, 3)
+        a = sensor_values[1] - 10.27
         d = sensor_values[2]
         
         prevAngle = sensor_values[0]
@@ -82,7 +82,7 @@ while(True):
         print(x_k)
         print("Updated P matrix: ")
         print(P_k)
-        t.sleep(1)
+        t.sleep(delay)
 
     x_km1 = x_k
     P_km1 = P_k
