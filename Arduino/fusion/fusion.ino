@@ -98,7 +98,7 @@ void loop()
     imu.getGyro(&gyro[0], &gyro[1], &gyro[2]);
     imu.getTemp(&t);
     d = range_sensor.readRangeContinuousMillimeters();
-
+    
     String sensor_values;
     sensor_values.concat(angle); sensor_values.concat(",");
     sensor_values.concat(accel[2]*9.81); sensor_values.concat(",");
@@ -112,28 +112,7 @@ void loop()
     udp_server.beginPacket(udp_server.remoteIP(), udp_server.remotePort());
     udp_server.write(sensor_values.c_str(), sensor_values.length());
     udp_server.endPacket();
-/**
-    printVector3('A', accel);
-    printVector3('G', gyro);
-    printScalar('T', t);
-    printScalar('D', d);
-    printPackageMetaInfo(packet_size);
-**/
   }
-}
-
-void printVector3(char label, float *vector)
-{
-  Serial.print(label); Serial.print(" = ");
-  Serial.print(vector[0] > 0.0 ? " " : "");Serial.print(vector[0]);Serial.print(",    \t");
-  Serial.print(vector[1] > 0.0 ? " " : "");Serial.print(vector[1]);Serial.print(",    \t");
-  Serial.print(vector[2] > 0.0 ? " " : "");Serial.println(vector[2]);
-}
-
-void printScalar(char label, float scalar)
-{
-  Serial.print(label); Serial.print(" = ");
-  Serial.print(scalar > 0.0 ? " " : "");Serial.println(scalar);
 }
 
 void printPackageMetaInfo(int packet_size)
