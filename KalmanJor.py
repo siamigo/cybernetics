@@ -31,8 +31,8 @@ def kalman_predict_x(Ad, x_m1, Bd, u_km1):
     x_kd = np.dot(Ad, x_m1) + np.dot(Bd, u_km1)
     return x_kd
 
-def kalman_predict_P(Ad, P_m1):
-    P_kd = np.dot(Ad, np.dot(P_m1, np.transpose(Ad)))
+def kalman_predict_P(Ad, P_m1, Qd):
+    P_kd = np.dot(Ad, np.dot(P_m1, np.transpose(Ad))) + Qd
     return P_kd
 """
 def kalman_gain(P_k, Hd, Rd):

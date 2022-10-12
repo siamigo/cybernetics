@@ -19,8 +19,18 @@ char packet_buffer[UDP_TX_PACKET_MAX_SIZE];
 
 #define ENCA 2
 #define ENCB 3
+#define PWM 11
+#define IN2 6
+#define IN1 7
 
 volatile int posi = 0;
+long prevT = 0;
+float eprev = 0;
+float eintegral = 0;
+int pwrT = 0;
+float ar = 9.2 / 2; // Axel radius mm
+
+float Pi = 3.14159;
 
 unsigned int oldT = 0;
 unsigned int dt = 1;
@@ -35,6 +45,10 @@ void setup()
   pinMode(ENCA,INPUT);
   pinMode(ENCB,INPUT);
   attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
+
+  pinMode(PWM,OUTPUT);
+  pinMode(IN1,OUTPUT);
+  pinMode(IN2,OUTPUT);
   
   if(!initialize())
      while(true)
@@ -106,12 +120,58 @@ void loop()
     sensor_values.concat(dt);
 
     udp_server.read(packet_buffer, UDP_TX_PACKET_MAX_SIZE);
-    float fromPython = String(packet_buffer).toFloat();
-    Serial.print("Updated x_k:  "); Serial.println(fromPython);
+    float x_k = String(packet_buffer).toFloat();
+    Serial.print("Updated x_k:  "); Serial.println(x_k);
 
     udp_server.beginPacket(udp_server.remoteIP(), udp_server.remotePort());
     udp_server.write(sensor_values.c_str(), sensor_values.length());
     udp_server.endPacket();
+
+    float targetMm = 175.0;
+
+    float target = targetMm / ar * 1024./(2.*Pi); // Target = theta(rad)/axelRadius * 1024 / 2pi
+  
+    float kp = 0.03687;
+    float kd = 0.004946;
+    float ki = 0.0006871;
+  
+    int e = x_k - target;
+  
+    // derivative
+    float dedt = (e-eprev)/(dt);
+  
+    // integral
+    eintegral = eintegral + e*dt;
+  
+    // control signal
+    float u = kp*e + kd*dt + ki*eintegral;
+  
+    // motor power
+    float pwr = fabs(u);
+    if( pwr > 255 ){
+      pwr = 255;
+    }
+  
+    // motor direction
+    int dir = 1;
+    if(u<0){
+      dir = -1;
+    }
+  
+    // signal the motor
+    setMotor(dir,pwr,PWM,IN1,IN2);
+  
+    // store previous error
+    eprev = e;
+  
+    int voltage = pwrT/255.*12.*1000.;
+    
+    Serial.print(target);
+    Serial.print(" ");
+    Serial.print(voltage);
+    Serial.print(" ");
+    Serial.print(x_k);
+    Serial.println();
   }
 }
 
@@ -139,4 +199,20 @@ void readEncoder(){
   else{
     posi--;
   }
+}
+
+void setMotor(int dir, int pwmVal, int pwm, int in1, int in2){
+  analogWrite(pwm,pwmVal);
+  if(dir == 1){
+    digitalWrite(in1,HIGH);
+    digitalWrite(in2,LOW);
+  }
+  else if(dir == -1){
+    digitalWrite(in1,LOW);
+    digitalWrite(in2,HIGH);
+  }
+  else{
+    digitalWrite(in1,LOW);
+    digitalWrite(in2,LOW);
+  }  
 }

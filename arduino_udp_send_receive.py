@@ -44,33 +44,33 @@ while(True):
         x_kmes[1] = v
         x_kmes[2] = a
 
-        Yk = np.dot(H, x_kmes)    
+        Yk = np.dot(H, x_kmes) 
+
+        x_kp = kalman_predict_x(A, x_km1, B, u)
+        P_kp = kalman_predict_P(A, P_km1, Q) # + Q
+
+        K = kalman_gain(P_kp, H, R)
+        
+        x_k = kalman_newstate(x_kp, K, Yk, H)
+        P_k = kalman_newerror(K, H, P_kp)
+
+        if DEBUG:
+            print("Yk: ")
+            print(Yk)
+            print("Predicted x matrix: ")
+            print(x_kp)
+            print("Predicted P matrix: ")
+            print(P_kp)
+            print("Kalman gain: ")
+            print(K)
+            print("Updated x matrix: ")
+            print(x_k)
+            print("Updated P matrix: ")
+            print(P_k)
+            t.sleep(delay)
+
+        x_km1 = x_k
+        P_km1 = P_k   
 
     else:
         arduino_has_been_reset()
-
-    x_kp = kalman_predict_x(A, x_km1, B, u)
-    P_kp = kalman_predict_P(A, P_km1) + Q
-
-    K = kalman_gain(P_kp, H, R)
-    
-    x_k = kalman_newstate(x_kp, K, Yk, H)
-    P_k = kalman_newerror(K, H, P_kp)
-
-    if DEBUG:
-        print("Yk: ")
-        print(Yk)
-        print("Predicted x matrix: ")
-        print(x_kp)
-        print("Predicted P matrix: ")
-        print(P_kp)
-        print("Kalman gain: ")
-        print(K)
-        print("Updated x matrix: ")
-        print(x_k)
-        print("Updated P matrix: ")
-        print(P_k)
-        t.sleep(delay)
-
-    x_km1 = x_k
-    P_km1 = P_k
