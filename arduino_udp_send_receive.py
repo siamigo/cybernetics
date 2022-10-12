@@ -1,7 +1,7 @@
 from KalmanJor import *
 
 DEBUG = True # Print values and add a delay
-delay = 0.5
+delay = 0.25
 
 ar = 0.4 # axle radius in cm
 dt = 0.1
@@ -9,9 +9,12 @@ prevAngle = 0.0
 
 dRaw, vRaw, aRaw = readFile('TestValues.txt')
 R = cal_covar(dRaw, vRaw, aRaw)
-"""P_km1 = np.array([[300, 0, 0],
-                  [0, 11.85, 0], 
-                  [0, 0, 0.24]]) # Initial process covariance"""
+R[0, 0] += 2
+R[2, 2] += 0.003
+
+dRawQ, vRawQ, aRawQ = readFile('QtestValues.txt')
+Q = np.array([[0.1, 0., 0.1],[0.0,0.,0.], [0.1, 0., 0.1]])
+
 P_km1 = R # Initial process covariance
 
 A_km1 = np.array([[1.0, dt, 0.5*(dt**2.0)], 
@@ -24,6 +27,12 @@ x_kmes = x_km1
 H = np.identity(len(R))
 B = 0.0
 u = 0.0
+
+if DEBUG:
+    print("R: ")
+    print(R)
+    print("Q: ")
+    print(Q)
 
 while(True):
     sensor_values = arduino_send_receive(x_km1[0])

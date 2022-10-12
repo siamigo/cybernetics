@@ -17,6 +17,15 @@ def cal_covar(dList, vList, aList):
 
 x0 = np.transpose(np.array([[1, 2, 3]]))
 
-print(x0[0])
-x0[0] = 10
-print(x0[0])
+"""
+def kalman_gain(P_k, Hd, Rd):
+    num = np.dot(P_k, np.transpose(Hd))
+    den = np.dot(Hd, np.dot(P_k, np.transpose(Hd))) + Rd
+    kk = np.zeros(np.shape(P_k))
+    for i in range(len(P_k)): 
+        for j in range(len(P_k)):
+            if (num[i, j] or den[i, j]) == 0:
+                kk[i, j] = 0
+            else:
+                kk[i, j] = num[i, j] / den[i, j]
+    return kk"""
