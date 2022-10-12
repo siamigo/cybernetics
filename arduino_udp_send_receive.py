@@ -1,10 +1,10 @@
 from KalmanJor import *
 
 DEBUG = True # Print values and add a delay
-delay = 0.01
+delay = 0.5
 
 ar = 0.4 # axle radius in cm
-dt = 0.0
+dt = 0.1
 prevAngle = 0.0
 
 dRaw, vRaw, aRaw = readFile('TestValues.txt')
@@ -13,6 +13,10 @@ R = cal_covar(dRaw, vRaw, aRaw)
                   [0, 11.85, 0], 
                   [0, 0, 0.24]]) # Initial process covariance"""
 P_km1 = R # Initial process covariance
+
+A_km1 = np.array([[1.0, dt, 0.5*(dt**2.0)], 
+                  [0.0, 1.0, dt], 
+                  [0.0, 0.0, 1.0]])
 
 x_km1 = np.transpose(np.array([[0.0, 0.0, 0.0]])) # Initial state
 x_kmes = x_km1
@@ -26,12 +30,11 @@ while(True):
     if(sensor_values is not None):
         dt = sensor_values[3] * 10**(-3)
 
-        A = np.array([[1.0, dt, 0.5*(dt**2.0)], 
-                      [0.0, 1.0, dt], 
-                      [0.0, 0.0, 1.0]])
-        
         G = np.array([[dt**(3)/6],[dt**(2)/2],[dt]])
         Q = G*np.transpose(G)*R
+
+        x_kp = kalman_predict_x(A_km1, x_km1, B, u)
+        P_kp = kalman_predict_P(A_km1, P_km1, Q)
 
         v = round( (sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt, 3)
         a = sensor_values[1] - 9.81
@@ -45,9 +48,6 @@ while(True):
         x_kmes[2] = a
 
         Yk = np.dot(H, x_kmes) 
-
-        x_kp = kalman_predict_x(A, x_km1, B, u)
-        P_kp = kalman_predict_P(A, P_km1, Q) # + Q
 
         K = kalman_gain(P_kp, H, R)
         
@@ -71,6 +71,10 @@ while(True):
 
         x_km1 = x_k
         P_km1 = P_k   
+
+        A_km1 = np.array([[1.0, dt, 0.5*(dt**2.0)], 
+                          [0.0, 1.0, dt], 
+                          [0.0, 0.0, 1.0]])
 
     else:
         arduino_has_been_reset()
