@@ -19,6 +19,7 @@ char packet_buffer[UDP_TX_PACKET_MAX_SIZE];
 
 #define ENCA 2
 #define ENCB 3
+
 volatile int posi = 0;
 
 unsigned int oldT = 0;
@@ -100,9 +101,7 @@ void loop()
     
     String sensor_values;
     sensor_values.concat(angle); sensor_values.concat(",");
-    sensor_values.concat(accel[0]); sensor_values.concat(",");
-    sensor_values.concat(accel[1]); sensor_values.concat(",");
-    sensor_values.concat(accel[2]); sensor_values.concat(",");
+    sensor_values.concat(accel[2]*9.81); sensor_values.concat(",");
     sensor_values.concat(d); sensor_values.concat(",");
     sensor_values.concat(dt);
 
