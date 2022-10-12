@@ -1,9 +1,7 @@
 from KalmanJor import *
 
 DEBUG = True # Print values and add a delay
-delay = 0.25
-estimate = 0.0
-delta = 1.0
+delay = 0.01
 
 ar = 0.4 # axle radius in cm
 dt = 0.0
@@ -24,19 +22,16 @@ B = 0.0
 u = 0.0
 
 while(True):
-    estimate = estimate + delta
-    if(estimate > 100.0):
-        delta = -1
-    elif(estimate < -100):
-        delta = 1
-
-    sensor_values = arduino_send_receive(estimate)
+    sensor_values = arduino_send_receive(x_km1[0])
     if(sensor_values is not None):
         dt = sensor_values[3] * 10**(-3)
 
         A = np.array([[1.0, dt, 0.5*(dt**2.0)], 
                       [0.0, 1.0, dt], 
                       [0.0, 0.0, 1.0]])
+        
+        G = np.array([[dt**(3)/6],[dt**(2)/2],[dt]])
+        Q = G*np.transpose(G)*R
 
         v = round( (sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt, 3)
         a = sensor_values[1] - 9.81
@@ -55,7 +50,7 @@ while(True):
         arduino_has_been_reset()
 
     x_kp = kalman_predict_x(A, x_km1, B, u)
-    P_kp = kalman_predict_P(A, P_km1)
+    P_kp = kalman_predict_P(A, P_km1) + Q
 
     K = kalman_gain(P_kp, H, R)
     

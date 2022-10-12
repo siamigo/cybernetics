@@ -11,7 +11,7 @@ arduino_ip = '192.168.10.240'
 arduino_port = 8888
 
 def arduino_send_receive(estimate):
-    udp_socket.sendto(str(estimate).encode(), (arduino_ip, arduino_port))
+    udp_socket.sendto(str(estimate).strip('[]').encode(), (arduino_ip, arduino_port))
     try:
         inbound_message, remote_address = udp_socket.recvfrom(1024)
         # returns an array with the following values

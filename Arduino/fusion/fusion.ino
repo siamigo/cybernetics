@@ -106,8 +106,8 @@ void loop()
     sensor_values.concat(dt);
 
     udp_server.read(packet_buffer, UDP_TX_PACKET_MAX_SIZE);
-    float estimate = String(packet_buffer).toFloat();
-    Serial.print("Est: ");Serial.println(estimate);
+    float fromPython = String(packet_buffer).toFloat();
+    Serial.print("Updated x_k:  "); Serial.println(fromPython);
 
     udp_server.beginPacket(udp_server.remoteIP(), udp_server.remotePort());
     udp_server.write(sensor_values.c_str(), sensor_values.length());
