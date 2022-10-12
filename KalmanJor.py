@@ -20,14 +20,6 @@ def arduino_send_receive(estimate):
     except Exception as e:
         print(e)
 
-
-def conv_to_speed(sensorV, r, deltaT):
-    w = sensorV[0] / deltaT
-    v = w * r
-    a = sensorV[1]
-    d = sensorV[2]
-    return d, v, a
-
 def arduino_has_been_reset():
     print("Arduino is offline.. Resetting")
 

@@ -5,16 +5,16 @@ delay = 0.25
 estimate = 0.0
 delta = 1.0
 
-ar = 0.4 # axle radius
+ar = 0.4 # axle radius in cm
 dt = 0.0
 prevAngle = 0.0
 
 dRaw, vRaw, aRaw = readFile('TestValues.txt')
 R = cal_covar(dRaw, vRaw, aRaw)
-P_km1 = np.array([[300, 0, 0],
+"""P_km1 = np.array([[300, 0, 0],
                   [0, 11.85, 0], 
-                  [0, 0, 0.24]]) # Initial process covariance
-#P_km1 = R
+                  [0, 0, 0.24]]) # Initial process covariance"""
+P_km1 = R # Initial process covariance
 
 x_km1 = np.transpose(np.array([[0.0, 0.0, 0.0]])) # Initial state
 x_kmes = x_km1
