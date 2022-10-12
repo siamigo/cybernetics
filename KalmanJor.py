@@ -40,19 +40,25 @@ def kalman_predict_x(Ad, x_m1, Bd, u_km1):
     return x_kd
 
 def kalman_predict_P(Ad, P_m1):
-    P_kd = np.dot(np.dot(Ad, P_m1), np.transpose(Ad))
+    P_kd = np.dot(Ad, np.dot(P_m1, np.transpose(Ad)))
     return P_kd
-
+"""
 def kalman_gain(P_k, Hd, Rd):
     num = np.dot(P_k, np.transpose(Hd))
-    den = np.dot(np.dot(Hd, P_k), np.transpose(Hd)) + Rd
+    den = np.dot(Hd, np.dot(P_k, np.transpose(Hd))) + Rd
     kk = np.zeros(np.shape(P_k))
-    for i in range(len(P_k)):
+    for i in range(len(P_k)): 
         for j in range(len(P_k)):
             if (num[i, j] or den[i, j]) == 0:
                 kk[i, j] = 0
             else:
                 kk[i, j] = num[i, j] / den[i, j]
+    return kk"""
+
+def kalman_gain(P_k, Hd, Rd):
+    num = np.dot(P_k, np.transpose(Hd))
+    den = np.dot(Hd, np.dot(P_k, np.transpose(Hd))) + Rd
+    kk = np.around(np.dot(num, np.linalg.inv(den)), 3)
     return kk
 
 def kalman_newstate(x_m1, Kk, Yd, Hd):
