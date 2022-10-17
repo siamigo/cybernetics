@@ -1,7 +1,7 @@
 from KalmanJor import *
 
-DEBUG = True # Print values and add a delay
-delay = 0.5
+DEBUG = False # Print values and add a delay
+delay = 0.25
 
 ar = 0.4 # axle radius in cm
 dt = 0.1
@@ -9,9 +9,14 @@ prevAngle = 0.0
 
 dRaw, vRaw, aRaw = readFile('TestValues.txt')
 R = cal_covar(dRaw, vRaw, aRaw)
-"""P_km1 = np.array([[300, 0, 0],
-                  [0, 11.85, 0], 
-                  [0, 0, 0.24]]) # Initial process covariance"""
+R[0, 0] += 20.0
+R[0, 2] += 0.02
+R[2, 0] += 0.02
+R[2, 2] += 0.1
+
+dRawQ, vRawQ, aRawQ = readFile('QtestValues.txt')
+Q = np.array([[1, 0., 0.01],[0.0,0.0,0.0], [0.01, 0.0, 0.1]])
+
 P_km1 = R # Initial process covariance
 
 A_km1 = np.array([[1.0, dt, 0.5*(dt**2.0)], 
@@ -25,7 +30,13 @@ H = np.identity(len(R))
 B = 0.0
 u = 0.0
 
-while(True):
+if DEBUG:
+    print("R: ")
+    print(R)
+    print("Q: ")
+    print(Q)
+
+while 1:
     sensor_values = arduino_send_receive(x_km1[0])
     if(sensor_values is not None):
         dt = sensor_values[3] * 10**(-3)
@@ -69,12 +80,12 @@ while(True):
             print(P_k)
             t.sleep(delay)
 
-        x_km1 = x_k
-        P_km1 = P_k   
-
         A_km1 = np.array([[1.0, dt, 0.5*(dt**2.0)], 
                           [0.0, 1.0, dt], 
                           [0.0, 0.0, 1.0]])
+
+        x_km1 = x_k
+        P_km1 = P_k   
 
     else:
         arduino_has_been_reset()
