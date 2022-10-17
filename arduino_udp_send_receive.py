@@ -34,7 +34,7 @@ if DEBUG:
     print("Q: ")
     print(Q)
 
-while(True):
+while 1:
     sensor_values = arduino_send_receive(x_km1[0])
     if(sensor_values is not None):
         dt = sensor_values[3] * 10**(-3)
@@ -78,12 +78,12 @@ while(True):
             print(P_k)
             t.sleep(delay)
 
-        x_km1 = x_k
-        P_km1 = P_k   
-
         A_km1 = np.array([[1.0, dt, 0.5*(dt**2.0)], 
                           [0.0, 1.0, dt], 
                           [0.0, 0.0, 1.0]])
+
+        x_km1 = x_k
+        P_km1 = P_k   
 
     else:
         arduino_has_been_reset()
