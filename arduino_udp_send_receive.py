@@ -1,6 +1,6 @@
 from KalmanJor import *
 
-DEBUG = True # Print values and add a delay
+DEBUG = False # Print values and add a delay
 delay = 0.25
 
 ar = 0.4 # axle radius in cm
@@ -9,11 +9,13 @@ prevAngle = 0.0
 
 dRaw, vRaw, aRaw = readFile('TestValues.txt')
 R = cal_covar(dRaw, vRaw, aRaw)
-R[0, 0] += 2
-R[2, 2] += 0.003
+R[0, 0] += 20.0
+R[0, 2] += 0.02
+R[2, 0] += 0.02
+R[2, 2] += 0.1
 
 dRawQ, vRawQ, aRawQ = readFile('QtestValues.txt')
-Q = np.array([[0.1, 0., 0.1],[0.0,0.,0.], [0.1, 0., 0.1]])
+Q = np.array([[1, 0., 0.01],[0.0,0.0,0.0], [0.01, 0.0, 0.1]])
 
 P_km1 = R # Initial process covariance
 

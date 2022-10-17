@@ -13,7 +13,7 @@ arduino_port = 8888
 def arduino_send_receive(estimate):
     udp_socket.sendto(str(estimate).strip('[]').encode(), (arduino_ip, arduino_port))
     try:
-        inbound_message, remote_address = udp_socket.recvfrom(1024)
+        inbound_message, remote_address = udp_socket.recvfrom(512)
         # returns an array with the following values
         # [accel_x, accel_y, accel_z, range_sensor]
         return np.array(inbound_message.decode('ascii').split(',')).astype(float)
