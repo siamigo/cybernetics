@@ -1,5 +1,7 @@
 from functions import *
 
+# All functions are in functions.py, as well as library imports
+
 DEBUG = False # Print values and add a delay
 delay = 0.25
 
@@ -7,15 +9,15 @@ ar = 0.4 # axle radius in cm
 dt = 0.1
 prevAngle = 0.0
 
-dRaw, vRaw, aRaw = readFile('TestValues.txt')
-R = cal_covar(dRaw, vRaw, aRaw)
+dRaw, vRaw, aRaw = readFile('TestValues.txt') # Read the test values from a file
+R = cal_covar(dRaw, vRaw, aRaw) # Calculate the covariance matrix
 R[0, 0] += 20.0
 R[0, 2] += 0.02
 R[2, 0] += 0.02
 R[2, 2] += 0.1
 
-dRawQ, vRawQ, aRawQ = readFile('QtestValues.txt')
-Q = np.array([[1, 0., 0.01],[0.0,0.0,0.0], [0.01, 0.0, 0.1]])
+dRawQ, vRawQ, aRawQ = readFile('QtestValues.txt') # Not used as measurements was done incorrectly
+Q = np.array([[1, 0., 0.01],[0.0,0.0,0.0], [0.01, 0.0, 0.1]]) # Tuned Q matrix manually
 
 P_km1 = R # Initial process covariance
 
@@ -24,7 +26,7 @@ A_km1 = np.array([[1.0, dt, 0.5*(dt**2.0)],
                   [0.0, 0.0, 1.0]])
 
 x_km1 = np.transpose(np.array([[0.0, 0.0, 0.0]])) # Initial state
-x_kmes = x_km1
+x_kmes = x_km1 # Just for definition
  
 H = np.identity(len(R))
 B = 0.0
@@ -47,18 +49,18 @@ while 1:
         x_kp = kalman_predict_x(A_km1, x_km1, B, u)
         P_kp = kalman_predict_P(A_km1, P_km1, Q)
 
-        v = round( (sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt, 3)
-        a = sensor_values[1] - 9.81
+        v = round( (sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt, 3) # Calculate linear velocity from angular velocity, using encoder angle measured in degrees
+        a = sensor_values[1] - 9.81 # Get acceleration measurement and gravity compensate
         d = sensor_values[2]
         
         prevAngle = sensor_values[0]
 
-        # x measurements
+        # x measurements matrix
         x_kmes[0] = d
         x_kmes[1] = v
         x_kmes[2] = a
 
-        Yk = np.dot(H, x_kmes) 
+        Yk = np.dot(H, x_kmes) # Senor fusion
 
         K = kalman_gain(P_kp, H, R)
         

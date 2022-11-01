@@ -130,12 +130,14 @@ void loop()
 
     float targetMm = 175.0;
 
-    float target = targetMm / ar * 1024./(2.*Pi); // Target = theta(rad)/axelRadius * 1024 / 2pi
+    // Target = theta(rad)/axelRadius * 1024 / 2pi
+    float target = targetMm / ar * 1024./(2.*Pi); // Convert to encoder ticks from target distance
   
     float kp = 0.03687;
     float kd = 0.004946;
     float ki = 0.0006871;
-  
+
+    // error
     int e = x_k - target;
   
     // derivative
@@ -149,6 +151,7 @@ void loop()
   
     // motor power
     float pwr = fabs(u);
+    // Limit power
     if( pwr > 255 ){
       pwr = 255;
     }
