@@ -1,22 +1,31 @@
-# Test rig for implementation of system idenetification and optimal state estimation
-This is a repository for introducing our work at NTNU Ålesund in AIS2202 - Cybernetics
+# Test rig for implementation of system identification and optimal state estimation
+
+The repository contains the files used to design a test rig for the course AIS2202 - Cybernetics at NTNU in Ålesund. The course is divided in three modules where two of the three modules is carried out using a test rig. 
+
+* The first assignment was to drop an egg from a height of 20 cm towards the ground in the fastest way possible without breaking the egg. The group then had to do *system identification* in order to estimate the system parameters.
+
+* The second assignment was to use *optimal state estimation* in order to estimate the height above ground. A Kalman filter was used for sensor fusion.
 
 ## System identification
 Test rig design           |  Video of result                
 :-------------------------:|:-------------------------:
-![](Media/WINCH_ASSEMBLY_si.png)  | 
+![](docs/Media/WINCH_ASSEMBLY_si.png)  | 
 
 ## Optimal State Estimation
 Test rig design          |  Video of result         
 :-------------------------:|:-------------------------:
-![](Media/WINCH_ASSEMBLY_ope.png)  | 
+![](docs/Media/WINCH_ASSEMBLY_ope.png)  | 
 
-## 3D-model files
-### System identification
+## Physical design
+
+[3D printed parts](docs/parts/Printed%20parts/) \
+[Laser cut parts](docs/parts/Laser%20cut%20parts/)
+
+### System identification test rig assembly
 [3MF](System_identification/test_rig_si.3mf) \
 [CADs](System_identification/CAD/)
 
-### Optimal state estimation
+### Optimal state estimation test rig assembly
 [3MF](Optimal_state/test_rig_ope.3mf) \
 [CADs](Optimal_state/CAD/)
 
