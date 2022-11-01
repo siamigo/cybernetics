@@ -42,6 +42,8 @@ Test rig design          |  Video of result
 
 * [Python](https://www.python.org/)
 
+* [MATLAB](https://se.mathworks.com/products/matlab.html)
+
 
 ## Authors
 
