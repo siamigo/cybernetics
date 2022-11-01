@@ -23,16 +23,24 @@ Test rig design          |  Video of result
 ## Getting Started
 
 ### Dependencies
+#### Python libraries
 
-#### Python
+* [Numpy](https://www.arduino.cc/)
+* [Socket](https://www.arduino.cc/)
+* [Time](https://www.arduino.cc/)
 
-#### Arduino
+#### Arduino libraries
+* [HardWire](https://www.arduino.cc/)
+* [VL53L0X](https://www.arduino.cc/)
+* [I2C MPU6886](https://www.arduino.cc/)
+* [Ethernet](https://www.arduino.cc/)
+* [AVR Standard C Time](https://www.arduino.cc/)
 
 ### Software
 
-* [Arduino](https://www.arduino.cc/) - Arduino
+* [Arduino](https://www.arduino.cc/)
 
-* [Python](https://www.python.org/) - Python
+* [Python](https://www.python.org/)
 
 
 ## Authors
