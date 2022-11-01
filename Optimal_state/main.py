@@ -1,4 +1,4 @@
-from KalmanJor import *
+from functions import *
 
 DEBUG = False # Print values and add a delay
 delay = 0.25
