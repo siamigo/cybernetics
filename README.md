@@ -4,12 +4,12 @@ This is a repository for introducing our work at NTNU Ålesund in AIS2202 - Cybe
 ## System identification
 Test rig design           |  Video of result                
 :-------------------------:|:-------------------------:
-![](System_identification/WINCH_ASSEMBLY_si.png)  | 
+![](Media/WINCH_ASSEMBLY_si.png)  | 
 
 ## Optimal State Estimation
 Test rig design          |  Video of result         
 :-------------------------:|:-------------------------:
-![](Optimal_state/WINCH_ASSEMBLY_ope.png)  | 
+![](Media/WINCH_ASSEMBLY_ope.png)  | 
 
 ## 3D-model files
 ### System identification
@@ -25,22 +25,24 @@ Test rig design          |  Video of result
 ### Dependencies
 #### Python libraries
 
-* [Numpy](https://www.arduino.cc/)
-* [Socket](https://www.arduino.cc/)
-* [Time](https://www.arduino.cc/)
+* [Numpy](https://numpy.org/)
+* [Socket](https://docs.python.org/3/library/socket.html)
+* [Time](https://docs.python.org/3/library/time.html?highlight=time#module-time)
 
 #### Arduino libraries
-* [HardWire](https://www.arduino.cc/)
-* [VL53L0X](https://www.arduino.cc/)
-* [I2C MPU6886](https://www.arduino.cc/)
-* [Ethernet](https://www.arduino.cc/)
-* [AVR Standard C Time](https://www.arduino.cc/)
+* [HardWire](https://github.com/thexeno/HardWire-Arduino-Library)
+* [VL53L0X](https://github.com/pololu/vl53l0x-arduino)
+* [I2C MPU6886](https://github.com/tanakamasayuki/I2C_MPU6886)
+* [Ethernet](https://www.arduino.cc/reference/en/libraries/ethernet/)
+* [AVR Standard C Time](https://www.arduino.cc/reference/en/libraries/avr-standard-c-time-library/)
 
 ### Software
 
 * [Arduino](https://www.arduino.cc/)
 
 * [Python](https://www.python.org/)
+
+* [MATLAB](https://se.mathworks.com/products/matlab.html)
 
 
 ## Authors
