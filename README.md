@@ -20,13 +20,15 @@ Test rig design          |  Video of result
 [3MF](Optimal_state/test_rig_ope.3mf) \
 [CADs](Optimal_state/CAD/)
 
-## Dependencies
+## Getting Started
 
-### Python
+### Dependencies
 
-### Arduino
+#### Python
 
-## Software
+#### Arduino
+
+### Software
 
 * [Arduino](https://www.arduino.cc/) - Arduino
 
