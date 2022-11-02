@@ -8,7 +8,7 @@ The first assignment was to drop an egg from a height of 20 cm towards the groun
 
 Test rig design           |  Video of result                
 :-------------------------:|:-------------------------:
-![](docs/Media/WINCH_ASSEMBLY_si.png)  | 
+![](docs/Media/Egg_drop.gif) | [![docs/Media/WINCH_ASSEMBLY_si.png](docs/Media/Egg_drop.mp4) 
 
 ## Optimal State Estimation
 
