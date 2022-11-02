@@ -31,9 +31,9 @@ void setup() {
 void loop() {
   int target = 6620;
 
-  float kp = 0.007485;
-  float kd = 0.0001093;
-  float ki = 0.01656;
+  float kp = 0.003531;
+  float kd = 0.0001133;
+  float ki = 0.003472;
 
   long currT = micros();
   float deltaT = ((float) (currT - prevT))/( 1.0e6 );
@@ -57,8 +57,8 @@ void loop() {
 
   // motor power
   float pwr = fabs(u);
-  if( pwr > 255 ){
-    pwr = 255;
+  if( pwr > 127 ){
+    pwr = 127;
   }
 
   // motor direction
@@ -75,7 +75,7 @@ void loop() {
   eprev = e;
 
   float targetAngle = (360./1024.)*target;
-  int voltage = pwrT/255.*12.*1000.;
+  int voltage = pwr/255.*12.*1000.;
   float angle = (360./1024.)*pos;
   int T = millis();
   
@@ -83,7 +83,7 @@ void loop() {
   Serial.print(" ");
   Serial.print(voltage);
   Serial.print(" ");
-  Serial.print(pos);
+  Serial.print(angle);
   Serial.print(" ");
   Serial.print(T);
   Serial.println();

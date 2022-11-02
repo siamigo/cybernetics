@@ -9,14 +9,14 @@ ar = 0.4 # axle radius in cm
 dt = 0.1
 prevAngle = 0.0
 
-dRaw, vRaw, aRaw = readFile('TestValues.txt') # Read the test values from a file
+dRaw, vRaw, aRaw = readFile('Optimal_state\TestValues.txt') # Read the test values from a file
 R = cal_covar(dRaw, vRaw, aRaw) # Calculate the covariance matrix
 R[0, 0] += 20.0
 R[0, 2] += 0.02
 R[2, 0] += 0.02
 R[2, 2] += 0.1
 
-dRawQ, vRawQ, aRawQ = readFile('QtestValues.txt') # Not used as measurements was done incorrectly
+dRawQ, vRawQ, aRawQ = readFile('Optimal_state\QtestValues.txt') # Not used as measurements was done incorrectly
 Q = np.array([[1, 0., 0.01],[0.0,0.0,0.0], [0.01, 0.0, 0.1]]) # Tuned Q matrix manually
 
 P_km1 = R # Initial process covariance

@@ -14,9 +14,9 @@ C = importdata('Test_data_3.txt');
 D = importdata('Test_data_4.txt');
 %% We need to rearrange the data on the form iddata(output,input,sampling time)
 
-inputVoltage_raw = D(:,2);  %Input voltage [mV]
-outputShaftAngle_raw = D(:,3);   %Output shaft angle [deg]
-time_raw = D(:,4);  %Raw time from millis() in Arduino [milliseconds]
+inputVoltage_raw = A(:,2);  %Input voltage [mV]
+outputShaftAngle_raw = A(:,3);   %Output shaft angle [deg]
+time_raw = A(:,4);  %Raw time from millis() in Arduino [milliseconds]
 
 inputVoltage = inputVoltage_raw / 1000; % Converting to volt
 outputShaftAngle = abs(outputShaftAngle_raw); %Taking absolute value
@@ -92,9 +92,9 @@ legend('Uncontrolled system')
 
 %% We then define our PID
 
-Kp = 0.007485 %0.003687; %Proportional
-Ki = 0.01656 %0.0006871;  %Integral
-Kd = 0.0001093 %0.004946; %Differential
+Kp = 0.003531 %0.003687; %Proportional
+Ki = 0.003472 %0.0006871;  %Integral
+Kd = 0.0001133 %0.004946; %Differential
 
 % Our control transfer function is
 Gc = pid(Kp, Ki, Kd);

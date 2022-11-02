@@ -4,6 +4,12 @@ float kd = 0.004946;
 float ki = 0.0006871;
 
 Kalman
+Test 1
 float kp = 0.007485;
 float kd = 0.0001093;
 float ki = 0.01656;
+
+Test 2 - BRUK DISSE, limit pwr til 127
+float kp = 0.003531;
+float kd = 0.0001133;
+float ki = 0.003472;

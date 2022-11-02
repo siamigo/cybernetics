@@ -22,7 +22,7 @@ char packet_buffer[UDP_TX_PACKET_MAX_SIZE];
 #define PWM 11
 #define IN2 6
 #define IN1 7
-int START = 31;
+const int START = 31;
 
 bool goUp = false;
 bool motorOn = false;
@@ -62,6 +62,8 @@ void setup()
   pinMode(ENCA,INPUT);
   pinMode(ENCB,INPUT);
   attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
+
+  pinMode(START,INPUT);
 
   pinMode(PWM,OUTPUT);
   pinMode(IN1,OUTPUT);
@@ -237,9 +239,9 @@ void loop()
 
     }
   
-    float kp = 0.03687;
-    float kd = 0.004946;
-    float ki = 0.0006871;
+    float kp = 0.003531;
+    float kd = 0.0001133;
+    float ki = 0.003472;
 
     // error
     int e = x_k - target;
@@ -259,9 +261,9 @@ void loop()
     {
       pwr = fabs(u);
       // Limit power
-      if( pwr > 255 )
+      if( pwr > 127 )
           {
-            pwr = 255;
+            pwr = 127;
           }
     }
 
