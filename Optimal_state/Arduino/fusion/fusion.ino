@@ -22,6 +22,10 @@ char packet_buffer[UDP_TX_PACKET_MAX_SIZE];
 #define PWM 11
 #define IN2 6
 #define IN1 7
+int START = 31;
+
+bool goUp = false;
+bool motorOn = false;
 
 volatile int posi = 0;
 long prevT = 0;
@@ -29,6 +33,17 @@ float eprev = 0;
 float eintegral = 0;
 int pwrT = 0;
 float ar = 9.2 / 2; // Axel radius mm
+float compTarget = 40.0;
+float pwr = 0.0;
+
+int caseNr = 0;
+const int startPlatform = 0;
+const int down1 = 1;
+const int up1 = 2;
+const int down2 = 3;
+const int up2 = 4;
+const int down3 = 5;
+const int endOnKalman = 6;
 
 float Pi = 3.14159;
 
@@ -132,6 +147,93 @@ void loop()
 
     // Target = theta(rad)/axelRadius * 1024 / 2pi
     float target = targetMm / ar * 1024./(2.*Pi); // Convert to encoder ticks from target distance
+
+    switch (caseNr)
+    {
+      case startPlatform:
+        Serial.print("Updated x_k:  "); Serial.println(x_k);
+        Serial.print("Measured distance:  "); Serial.println(d);
+        if (digitalRead(START) == HIGH)
+        {
+          Serial.println("Case down1");
+          caseNr = down1;
+          targetMm = 180.0;
+          motorOn = true;
+        }
+        break;
+
+      case down1:
+      Serial.println(target);
+        if (pos >= target)
+        {
+          Serial.println("Case up1");
+          caseNr = up1;
+          targetMm = 20.0;
+        }
+        break;
+      
+      case up1:
+        if (pos <= target)
+        {
+          Serial.println("Case down2");
+          caseNr = down2;
+          targetMm = 130.0;
+        }
+        break;
+      
+      case down2:
+        if (pos >= target)
+        {
+          Serial.println("Case up2");
+          caseNr = up2;
+          targetMm = 50.0;
+        }
+        break;
+
+      case up2:
+        if (pos <= target)
+        {
+          Serial.println("Case down3");
+          caseNr = down3;
+          targetMm = 150.0;
+        }
+        break;
+      
+      case down3:
+        if (pos >= target)
+        {
+          Serial.println("Case endOnKalman");
+          caseNr = endOnKalman;
+          targetMm = compTarget;
+          if (pos >= target)
+          {
+            goUp = true;
+          }
+          else
+          {
+            goUp = false;
+          }
+        }
+        break;
+
+      case endOnKalman:
+        if (goUp)
+          if (x_k <= targetMm)
+          {
+            caseNr = startPlatform;
+            targetMm = 0.0;
+            motorOn = false;
+          }
+        else
+          if (x_k >= targetMm)
+          {
+            caseNr = startPlatform;
+            targetMm = 0.0;
+            motorOn = false;
+          }
+        break;
+
+    }
   
     float kp = 0.03687;
     float kd = 0.004946;
@@ -151,9 +253,19 @@ void loop()
   
     // motor power
     float pwr = fabs(u);
-    // Limit power
-    if( pwr > 255 ){
-      pwr = 255;
+    if (motorOn)
+    {
+      pwr = fabs(u);
+      // Limit power
+      if( pwr > 255 )
+          {
+            pwr = 255;
+          }
+    }
+
+    else
+    {
+      pwr = 0;
     }
   
     // motor direction
