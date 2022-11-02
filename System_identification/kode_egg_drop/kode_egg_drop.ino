@@ -29,7 +29,7 @@ void setup() {
 }
 
 void loop() {
-  int target = 6047;
+  int target = 7143;
 
   float kp = 0.03687;
   float kd = 0.004946;
