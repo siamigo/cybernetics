@@ -1,6 +1,6 @@
 # Test rig for implementation of system identification and optimal state estimation
 
-The repository contains the files used to design a test rig for the course AIS2202 - Cybernetics at NTNU in Ålesund. The course is divided in three modules where two of the three modules is carried out using the test rig.
+The repository contains the files used to design a test rig for the course AIS2202 - Cybernetics at NTNU in Ålesund. The course is divided in three modules where two of the three modules is carried out using a test rig.
 
 ## System identification
 
