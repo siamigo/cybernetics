@@ -6,9 +6,7 @@ The repository contains the files used to design a test rig for the course AIS22
 
 The first assignment was to drop an egg from a height of 20 cm towards the ground in the fastest way possible without breaking the egg. The group then had to do *system identification* in order to estimate the system parameters.
 
-Test rig design           |  Video of result                
-:-------------------------:|:-------------------------:
-![](docs/Media/Egg_drop.gif) |  [![Video of result](docs/Media/WINCH_ASSEMBLY_si.png)](https://user-images.githubusercontent.com/80153186/199442516-3141fbd5-801f-41b6-bb06-c01fbd51d062.mp4)
+![](docs/Media/Egg_drop.gif)  
 
 
 
@@ -16,9 +14,9 @@ Test rig design           |  Video of result
 
 The second assignment was to use *optimal state estimation* in order to estimate the height above ground. A Kalman filter was used for sensor fusion.
 
-Test rig design          |  Video of result         
+Test video - System identification          |  Test video - Optimal State Estimation         
 :-------------------------:|:-------------------------:
-![](docs/Media/WINCH_ASSEMBLY_ope.png)  | 
+[![Video of result](docs/Media/WINCH_ASSEMBLY_si.png)](https://user-images.githubusercontent.com/80153186/199442516-3141fbd5-801f-41b6-bb06-c01fbd51d062.mp4) | ![](docs/Media/WINCH_ASSEMBLY_ope.png) 
 
 ## Physical design
 
