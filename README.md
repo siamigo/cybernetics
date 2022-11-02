@@ -8,7 +8,7 @@ The first assignment was to drop an egg from a height of 20 cm towards the groun
 
 Test rig design           |  Video of result                
 :-------------------------:|:-------------------------:
-![](docs/Media/Egg_drop.gif) |  [![Video of result](docs/Media/WINCH_ASSEMBLY_si.png)]([docs/Media/Egg_drop.mp4](https://user-images.githubusercontent.com/80153186/199442516-3141fbd5-801f-41b6-bb06-c01fbd51d062.mp4)
+![](docs/Media/Egg_drop.gif) |  [![Video of result](docs/Media/WINCH_ASSEMBLY_si.png)](docs/Media/Egg_drop.mp4)
 
 
 
