@@ -29,11 +29,11 @@ void setup() {
 }
 
 void loop() {
-  int target = 6047;
+  int target = 6620;
 
-  float kp = 0.03687;
-  float kd = 0.004946;
-  float ki = 0.0006871;
+  float kp = 0.007485;
+  float kd = 0.0001093;
+  float ki = 0.01656;
 
   long currT = micros();
   float deltaT = ((float) (currT - prevT))/( 1.0e6 );
