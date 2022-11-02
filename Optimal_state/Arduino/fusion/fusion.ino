@@ -33,6 +33,8 @@ float eprev = 0;
 float eintegral = 0;
 int pwrT = 0;
 float ar = 9.2 / 2; // Axel radius mm
+
+float targetMm = 0;
 float compTarget = 40.0;
 float pwr = 0.0;
 
@@ -143,8 +145,6 @@ void loop()
     udp_server.write(sensor_values.c_str(), sensor_values.length());
     udp_server.endPacket();
 
-    float targetMm = 175.0;
-
     // Target = theta(rad)/axelRadius * 1024 / 2pi
     float target = targetMm / ar * 1024./(2.*Pi); // Convert to encoder ticks from target distance
 
@@ -163,7 +163,6 @@ void loop()
         break;
 
       case down1:
-      Serial.println(target);
         if (pos >= target)
         {
           Serial.println("Case up1");
@@ -218,19 +217,22 @@ void loop()
 
       case endOnKalman:
         if (goUp)
-          if (x_k <= targetMm)
           {
-            caseNr = startPlatform;
-            targetMm = 0.0;
-            motorOn = false;
+            if (pos <= target)
+            {
+              Serial.println(x_k);
+              motorOn = false;
+            }
           }
         else
-          if (x_k >= targetMm)
+        {
+          if (pos >= target)
           {
-            caseNr = startPlatform;
-            targetMm = 0.0;
+            Serial.println(x_k);
             motorOn = false;
           }
+        }
+          
         break;
 
     }
