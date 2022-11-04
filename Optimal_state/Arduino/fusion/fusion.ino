@@ -22,10 +22,10 @@ char packet_buffer[UDP_TX_PACKET_MAX_SIZE];
 #define PWM 11
 #define IN2 6
 #define IN1 7
-const int START = 31;
+const int START = 26;
 
-bool goUp = false;
 bool motorOn = false;
+bool idle = false;
 
 volatile int posi = 0;
 long prevT = 0;
@@ -34,18 +34,19 @@ float eintegral = 0;
 int pwrT = 0;
 float ar = 9.2 / 2; // Axel radius mm
 
-float targetMm = 0;
-float compTarget = 40.0;
+int target = 0;
+float targetDownMm = 260.0;
+float targetUpMm = 70.0;
+float compTargetMm = 160.0; // Need to be between targetDownMm and targetUpMm
 float pwr = 0.0;
 
 int caseNr = 0;
 const int startPlatform = 0;
-const int down1 = 1;
-const int up1 = 2;
-const int down2 = 3;
-const int up2 = 4;
-const int down3 = 5;
-const int endOnKalman = 6;
+const int down = 1;
+const int up = 2;
+const int endOnKalman = 3;
+
+int countUp = 0;
 
 float Pi = 3.14159;
 
@@ -140,101 +141,73 @@ void loop()
 
     udp_server.read(packet_buffer, UDP_TX_PACKET_MAX_SIZE);
     float x_k = String(packet_buffer).toFloat();
-    Serial.print("Updated x_k:  "); Serial.println(x_k);
-    Serial.print("Measured distance:  "); Serial.println(d);
+    //Serial.print("Updated x_k:  "); Serial.println(x_k);
+    //Serial.print("Measured distance:  "); Serial.println(d);
 
     udp_server.beginPacket(udp_server.remoteIP(), udp_server.remotePort());
     udp_server.write(sensor_values.c_str(), sensor_values.length());
     udp_server.endPacket();
 
     // Target = theta(rad)/axelRadius * 1024 / 2pi
-    float target = targetMm / ar * 1024./(2.*Pi); // Convert to encoder ticks from target distance
+    int targetDown = targetDownMm / ar * 1024./(2.*Pi) - 2250; // Convert to encoder ticks from target distance
+    int targetUp = targetUpMm / ar * 1024./(2.*Pi) - 2250; // Convert to encoder ticks from target distance
+    int compTarget = compTargetMm / ar * 1024./(2.*Pi) - 2250; // Convert to encoder ticks from target distance
 
     switch (caseNr)
     {
       case startPlatform:
-        Serial.print("Updated x_k:  "); Serial.println(x_k);
-        Serial.print("Measured distance:  "); Serial.println(d);
+        //Serial.print("Updated x_k:  "); Serial.println(x_k);
+        //Serial.print("Measured distance:  "); Serial.println(d);
         if (digitalRead(START) == HIGH)
         {
-          Serial.println("Case down1");
-          caseNr = down1;
-          targetMm = 180.0;
+          Serial.println("Case down");
+          caseNr = down;
+          target = targetDown;
           motorOn = true;
         }
+
         break;
 
-      case down1:
-        if (pos >= target)
+      case down:
+        if (pos >= targetDown)
         {
-          Serial.println("Case up1");
-          caseNr = up1;
-          targetMm = 20.0;
+          Serial.println("Case up");
+          target = targetUp;
+          countUp += 1;
+          caseNr = up;
         }
-        break;
-      
-      case up1:
-        if (pos <= target)
-        {
-          Serial.println("Case down2");
-          caseNr = down2;
-          targetMm = 130.0;
-        }
-        break;
-      
-      case down2:
-        if (pos >= target)
-        {
-          Serial.println("Case up2");
-          caseNr = up2;
-          targetMm = 50.0;
-        }
-        break;
 
-      case up2:
-        if (pos <= target)
-        {
-          Serial.println("Case down3");
-          caseNr = down3;
-          targetMm = 150.0;
-        }
         break;
       
-      case down3:
-        if (pos >= target)
+      case up:
+        if (pos <= targetUp)
         {
-          Serial.println("Case endOnKalman");
-          caseNr = endOnKalman;
-          targetMm = compTarget;
-          if (pos >= target)
+          Serial.println("Case down");
+          if (countUp < 5)
           {
-            goUp = true;
+            caseNr = endOnKalman;
+            target = compTarget;
           }
+        }
           else
           {
-            goUp = false;
+            caseNr = down;
+            target = targetDown;
           }
-        }
+            
         break;
 
       case endOnKalman:
-        if (goUp)
-          {
-            if (pos <= target)
-            {
-              Serial.println(x_k);
-              motorOn = false;
-            }
-          }
-        else
+        if (idle) 
         {
-          if (pos >= target)
-          {
-            Serial.println(x_k);
-            motorOn = false;
-          }
+          break;
         }
-          
+        else if (pos >= compTarget)
+        {
+          Serial.println(x_k);
+          motorOn = false;
+        }   
+
         break;
 
     }
@@ -244,7 +217,7 @@ void loop()
     float ki = 0.003472;
 
     // error
-    int e = x_k - target;
+    int e = pos - target;
   
     // derivative
     float dedt = (e-eprev)/(dt);
@@ -261,9 +234,9 @@ void loop()
     {
       pwr = fabs(u);
       // Limit power
-      if( pwr > 127 )
+      if( pwr > 64 )
           {
-            pwr = 127;
+            pwr = 64;
           }
     }
 
@@ -279,15 +252,18 @@ void loop()
     }
   
     // signal the motor
-    setMotor(dir,pwr,PWM,IN1,IN2);
+    setMotor(-dir,pwr,PWM,IN1,IN2);
   
     // store previous error
     eprev = e;
   
     int voltage = pwrT/255.*12.*1000.;
+
+    
+    Serial.print("Pos:  "); Serial.println(pos);
+    Serial.print("Target: "); Serial.println(target);
+    Serial.print("TargetDown: "); Serial.println(targetDown);
     /*
-    Serial.print(target);
-    Serial.print(" ");
     Serial.print(voltage);
     Serial.print(" ");
     Serial.print(x_k);

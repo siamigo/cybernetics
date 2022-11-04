@@ -2,7 +2,7 @@ from functions import *
 
 # All functions are in functions.py, as well as library imports
 
-DEBUG = True # Print values and add a delay
+DEBUG = False # Print values and add a delay
 delay = 0.25
 
 ar = 9.2 / 2 # axle radius in mm
