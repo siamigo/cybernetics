@@ -2,22 +2,22 @@ from functions import *
 
 # All functions are in functions.py, as well as library imports
 
-DEBUG = False # Print values and add a delay
+DEBUG = True # Print values and add a delay
 delay = 0.25
 
-ar = 0.4 # axle radius in cm
-dt = 0.1
+ar = 9.2 / 2 # axle radius in mm
+dt = 1.0
 prevAngle = 0.0
 
 dRaw, vRaw, aRaw = readFile('Optimal_state\TestValues.txt') # Read the test values from a file
 R = cal_covar(dRaw, vRaw, aRaw) # Calculate the covariance matrix
-R[0, 0] += 20.0
-R[0, 2] += 0.02
-R[2, 0] += 0.02
-R[2, 2] += 0.1
+#R[0, 0] += 20.0
+#R[0, 2] += 0.02
+#R[2, 0] += 0.02
+#R[2, 2] += 0.1
 
 dRawQ, vRawQ, aRawQ = readFile('Optimal_state\QtestValues.txt') # Not used as measurements was done incorrectly
-Q = np.array([[1, 0., 0.01],[0.0,0.0,0.0], [0.01, 0.0, 0.1]]) # Tuned Q matrix manually
+Q = np.array([[10, 0., 0.1],[0.0,0.0,0.0], [0.1, 0.0, 10]]) # Tuned Q matrix manually
 
 P_km1 = R # Initial process covariance
 
@@ -44,12 +44,12 @@ while 1:
         dt = sensor_values[3] * 10**(-3)
 
         G = np.array([[dt**(3)/6],[dt**(2)/2],[dt]])
-        Q = G*np.transpose(G)*R
+        Q = G * np.transpose(G)*R
 
         x_kp = kalman_predict_x(A_km1, x_km1, B, u)
         P_kp = kalman_predict_P(A_km1, P_km1, Q)
 
-        v = round( (sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt, 3) # Calculate linear velocity from angular velocity, using encoder angle measured in degrees
+        v = (sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt # Calculate linear velocity from angular velocity, using encoder angle measured in degrees
         a = sensor_values[1] - 9.81 # Get acceleration measurement and gravity compensate
         d = sensor_values[2]
         

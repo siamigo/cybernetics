@@ -13,7 +13,7 @@ arduino_port = 8888
 def arduino_send_receive(estimate):
     udp_socket.sendto(str(estimate).strip('[]').encode(), (arduino_ip, arduino_port))
     try:
-        inbound_message, remote_address = udp_socket.recvfrom(512)
+        inbound_message, remote_address = udp_socket.recvfrom(1024)
         # returns an array with the following values
         # [accel_x, accel_y, accel_z, range_sensor]
         return np.array(inbound_message.decode('ascii').split(',')).astype(float)
@@ -38,7 +38,7 @@ def kalman_predict_P(Ad, P_m1, Qd):
 def kalman_gain(P_k, Hd, Rd):
     num = np.dot(P_k, np.transpose(Hd))
     den = np.dot(Hd, np.dot(P_k, np.transpose(Hd))) + Rd
-    kk = np.around(np.dot(num, np.linalg.inv(den)), 3)
+    kk = np.dot(num, np.linalg.inv(den))
     return kk
 
 def kalman_newstate(x_m1, Kk, Yd, Hd):
