@@ -25,6 +25,7 @@ char packet_buffer[UDP_TX_PACKET_MAX_SIZE];
 const int START = 26;
 
 bool motorOn = false;
+int dir = -1;
 bool idle = false;
 
 volatile int posi = 0;
@@ -34,10 +35,10 @@ float eintegral = 0;
 int pwrT = 0;
 float ar = 9.2 / 2; // Axel radius mm
 
-int target = 0;
-float targetDownMm = 260.0;
-float targetUpMm = 70.0;
-float compTargetMm = 160.0; // Need to be between targetDownMm and targetUpMm
+float target = 0;
+float targetDownMm = 200.0;
+float targetUpMm = 100.0;
+float compTargetMm = 150.0; // Need to be between targetDownMm and targetUpMm
 float pwr = 0.0;
 
 int caseNr = 0;
@@ -163,6 +164,7 @@ void loop()
           Serial.println("Case down");
           caseNr = down;
           target = targetDown;
+          dir = -1;
           motorOn = true;
         }
 
@@ -173,6 +175,7 @@ void loop()
         {
           Serial.println("Case up");
           target = targetUp;
+          dir = 1;
           countUp += 1;
           caseNr = up;
         }
@@ -183,18 +186,21 @@ void loop()
         if (pos <= targetUp)
         {
           Serial.println("Case down");
-          if (countUp < 5)
+          if (countUp >= 5)
           {
             caseNr = endOnKalman;
             target = compTarget;
+            dir = -1;
           }
-        }
+
           else
           {
             caseNr = down;
             target = targetDown;
+            dir = -1;
           }
-            
+        }
+          
         break;
 
       case endOnKalman:
@@ -206,6 +212,7 @@ void loop()
         {
           Serial.println(x_k);
           motorOn = false;
+          idle = true;
         }   
 
         break;
@@ -234,9 +241,9 @@ void loop()
     {
       pwr = fabs(u);
       // Limit power
-      if( pwr > 64 )
+      if( pwr > 32 )
           {
-            pwr = 64;
+            pwr = 32;
           }
     }
 
@@ -245,25 +252,19 @@ void loop()
       pwr = 0;
     }
   
-    // motor direction
-    int dir = 1;
-    if(u<0){
-      dir = -1;
-    }
-  
     // signal the motor
-    setMotor(-dir,pwr,PWM,IN1,IN2);
+    setMotor(dir,pwr,PWM,IN1,IN2);
   
     // store previous error
     eprev = e;
   
     int voltage = pwrT/255.*12.*1000.;
-
-    
+    /*
+    Serial.print("Case Nr: "); Serial.println(caseNr);
     Serial.print("Pos:  "); Serial.println(pos);
     Serial.print("Target: "); Serial.println(target);
     Serial.print("TargetDown: "); Serial.println(targetDown);
-    /*
+    
     Serial.print(voltage);
     Serial.print(" ");
     Serial.print(x_k);
