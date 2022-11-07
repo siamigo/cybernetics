@@ -89,7 +89,9 @@ while 1:
         x_km1 = x_k
         P_km1 = P_k
 
-        write_csv(Yk[0], Yk[1], Yk[2], x_kp[0], x_kp[1], x_kp[2], 'kalman_data/sensor_data.csv')   
+        Darr = np.hstack((np.transpose(Yk), np.transpose(x_kp)))
+        arr = Darr[0]
+        write_csv(arr, 'sensor_data.csv')
 
     else:
         arduino_has_been_reset()

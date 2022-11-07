@@ -63,7 +63,8 @@ def cal_covar(dList, vList, aList):
     return Rd
 
 
-def write_csv(r_d, r_v, r_a, e_d, e_v, e_a , filename):
+def write_csv(data , filename):
     with open(filename, 'w', encoding='UTF8', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(r_d, r_v, r_a, e_d, e_v, e_a)
+        writer.writerow(data)
+        f.close()
