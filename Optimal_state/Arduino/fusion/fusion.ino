@@ -36,9 +36,9 @@ int pwrT = 0;
 float ar = 9.2 / 2; // Axel radius mm
 
 float target = 0;
-float targetDownMm = 200.0;
-float targetUpMm = 100.0;
-float compTargetMm = 150.0; // Need to be between targetDownMm and targetUpMm
+float targetDownMm = 150.0;
+float targetUpMm = 50.0;
+float compTargetMm = 100.0; // Need to be between targetDownMm and targetUpMm
 float pwr = 0.0;
 
 int caseNr = 0;
