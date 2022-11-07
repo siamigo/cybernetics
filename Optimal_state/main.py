@@ -91,7 +91,8 @@ while 1:
 
         Darr = np.hstack((np.transpose(Yk), np.transpose(x_kp)))
         arr = Darr[0]
-        csv.writer(arr, "kalman_data.csv")
+        print(arr)
+        #write_csv(arr, "kalman_data.csv")
 
     else:
         arduino_has_been_reset()
