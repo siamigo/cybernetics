@@ -1,6 +1,7 @@
 import time as t
 from socket import *
 import numpy as np
+import csv
 
 udp_socket = socket(AF_INET, SOCK_DGRAM)
 udp_socket.settimeout(1)
@@ -60,3 +61,9 @@ def cal_covar(dList, vList, aList):
                    [a_var*d_var, a_var*v_var, a_var]])
     
     return Rd
+
+
+def write_csv(r_d, r_v, r_a, e_d, e_v, e_a , filename):
+    with open(filename, 'w', encoding='UTF8', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(r_d, r_v, r_a, e_d, e_v, e_a)

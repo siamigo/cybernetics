@@ -87,7 +87,9 @@ while 1:
                           [0.0, 0.0, 1.0]])
 
         x_km1 = x_k
-        P_km1 = P_k   
+        P_km1 = P_k
+
+        write_csv(Yk[0], Yk[1], Yk[2], x_kp[0], x_kp[1], x_kp[2], 'kalman_data/sensor_data.csv')   
 
     else:
         arduino_has_been_reset()
