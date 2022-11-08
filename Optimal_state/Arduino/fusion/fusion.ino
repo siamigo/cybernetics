@@ -157,8 +157,8 @@ void loop()
     switch (caseNr)
     {
       case startPlatform:
-        //Serial.print("Updated x_k:  "); Serial.println(x_k);
-        //Serial.print("Measured distance:  "); Serial.println(d);
+        Serial.print("Updated x_k:  "); Serial.println(x_k);
+        Serial.print("Measured distance:  "); Serial.println(d);
         if (digitalRead(START) == HIGH)
         {
           Serial.println("Case down");

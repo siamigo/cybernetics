@@ -17,7 +17,7 @@ R = cal_covar(dRaw, vRaw, aRaw) # Calculate the covariance matrix
 #R[2, 2] += 0.1
 
 dRawQ, vRawQ, aRawQ = readFile('Optimal_state\QtestValues.txt') # Not used as measurements was done incorrectly
-Q = np.array([[10, 0., 0.1],[0.0,0.0,0.0], [0.1, 0.0, 10]]) # Tuned Q matrix manually
+Q = np.array([[3, 0., 0.3],[0.0,0.0,0.0], [0.3, 0.0, 0.1]]) # Tuned Q matrix manually
 
 P_km1 = R # Initial process covariance
 
@@ -42,9 +42,6 @@ while 1:
     sensor_values = arduino_send_receive(x_km1[0])
     if(sensor_values is not None):
         dt = sensor_values[3] * 10**(-3)
-
-        G = np.array([[dt**(3)/6],[dt**(2)/2],[dt]])
-        Q = G * np.transpose(G)*R
 
         x_kp = kalman_predict_x(A_km1, x_km1, B, u)
         P_kp = kalman_predict_P(A_km1, P_km1, Q)
@@ -90,7 +87,7 @@ while 1:
         P_km1 = P_k
 
         arr = np.concatenate((Yk[:,0], x_kp[:,0], [dt]))
-        write_csv(arr, "kalman_data.csv")
+        write_csv(arr, "kalman_data1.csv")
 
     else:
         arduino_has_been_reset()
