@@ -92,15 +92,15 @@ legend('Uncontrolled system')
 
 %% We then define our PID
 
-Kp = 0.003531 %0.003687; %Proportional
-Ki = 0.003472 %0.0006871;  %Integral
-Kd = 0.0001133 %0.004946; %Differential
+Kp = 0.03687;%0.003531 % %Proportional
+Ki = 0.0006871;%0.003472 %  %Integral
+Kd = 0.004946;%0.0001133 % %Differential
 
 % Our control transfer function is
 Gc = pid(Kp, Ki, Kd);
 
 % And we can define our controlled system
-Mc = feedback(Gc*Gp, H);
+Mc = feedback(Gc*tf2, H); %tf3
 
 step(Mc)
 grid on
