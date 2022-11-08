@@ -2,7 +2,7 @@ from functions import *
 
 # All functions are in functions.py, as well as library imports
 
-DEBUG = False # Print values and add a delay
+DEBUG = True # Print values and add a delay
 delay = 0.25
 
 ar = 9.2 / 2 # axle radius in mm
@@ -86,8 +86,9 @@ while 1:
         x_km1 = x_k
         P_km1 = P_k
 
-        arr = np.concatenate((Yk[:,0], x_kp[:,0], [dt]))
-        write_csv(arr, "kalman_data1.csv")
+        #arr = np.concatenate((Yk[:,0], x_k[:,0], [dt]))
+        #write_csv(arr, "kalman_data3.csv")
+        #t.sleep(0.05)
 
     else:
         arduino_has_been_reset()
