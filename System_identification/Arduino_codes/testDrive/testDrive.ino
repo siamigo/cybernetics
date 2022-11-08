@@ -1,5 +1,9 @@
 // Code for identifying the system sending arbitrary pulses in order to process the measurement data in matlab
-
+#include <HardWire.h>
+#include <VL53L0X.h>
+#include <I2C_MPU6886.h>
+#include <AVR_RTC.h>
+#include <util/atomic.h>
 #include <AVR_RTC.h>
 #include <util/atomic.h>
 
@@ -9,6 +13,9 @@
 #define PWM 11
 #define IN2 6
 #define IN1 7
+
+VL53L0X range_sensor;
+I2C_MPU6886 imu(I2C_MPU6886_DEFAULT_ADDRESS, Wire);
 
 volatile int posi = 0; // specify posi as volatile: https://www.arduino.cc/reference/en/language/variables/variable-scope-qualifiers/volatile/
 long oldT = 0;
@@ -39,8 +46,12 @@ void loop() {
     pos = posi;
   }
 
+  float accel[3];
+
   unsigned int T = millis();
-  
+  pwr = 41;
+
+  /*
   if (pos >= 512 && pos < 1024)
   {
     pwr = 64;
@@ -92,7 +103,7 @@ void loop() {
   else if (pos >= target)
   {
     pwr = 0;
-  }    
+  }    */
 
   // signal the motor
   setMotor(dir,pwr,PWM,IN1,IN2);
@@ -100,15 +111,18 @@ void loop() {
   float targetAngle = (360./1024.)*target;
   int voltage = pwr/255.*12.*1000.;
   float angle = (360./1024.)*pos;
+  unsigned int dt = T-oldT;
   oldT = millis();
   
-  Serial.print(targetAngle);
-  Serial.print(" ");
-  Serial.print(voltage);
-  Serial.print(" ");
+  //Serial.print(targetAngle);
+  //Serial.print(" ");
+  Serial.print(d);
+  Serial.print(",");
   Serial.print(angle);
-  Serial.print(" ");
-  Serial.print(T);
+  Serial.print(",");
+  Serial.print(accel[3])
+  Serial.print(",");
+  Serial.print(dt)
   Serial.println();
 }
 
