@@ -38,19 +38,18 @@ if DEBUG:
     print("Q: ")
     print(Q)
 
-while 1:
-    sensor_values = arduino_send_receive(x_km1[0])
-    if(sensor_values is not None):
-        dt = sensor_values[3] * 10**(-3)
+simFile = readFileComma('\Optimal_state\kalman_data.csv')
+for index, value in enumerate(simFile):
+        dt = simFile[6]
 
         x_kp = kalman_predict_x(A_km1, x_km1, B, u)
         P_kp = kalman_predict_P(A_km1, P_km1, Q)
 
-        v = (sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt # Calculate linear velocity from angular velocity, using encoder angle measured in degrees
-        a = sensor_values[1] - 9.81 # Get acceleration measurement and gravity compensate
-        d = sensor_values[2]
+        v = simFile[1]
+        a = simFile[2]
+        d = simFile[0]
         
-        prevAngle = sensor_values[0]
+        prevAngle = [0]
 
         # x measurements matrix
         x_kmes[0] = d
