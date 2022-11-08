@@ -1,3 +1,5 @@
+// Code for identifying the system sending arbitrary pulses in order to process the measurement data in matlab
+
 #include <AVR_RTC.h>
 #include <util/atomic.h>
 
