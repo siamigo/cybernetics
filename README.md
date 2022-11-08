@@ -19,7 +19,7 @@ The second assignment was to use *optimal state estimation* in order to estimate
 
 Test video - System identification          |  Test video - Optimal State Estimation         
 :-------------------------:|:-------------------------:
-[![Video of system identification](docs/Media/WINCH_ASSEMBLY_si.png)](https://user-images.githubusercontent.com/80153186/199442516-3141fbd5-801f-41b6-bb06-c01fbd51d062.mp4) | [![Video of optimal state estimation](https://user-images.githubusercontent.com/80153186/200439513-676ddcd6-6ddc-4a94-982e-7b6b8a6093e2.mp4)](docs/Media/WINCH_ASSEMBLY_ope.png)
+[![Video of system identification](docs/Media/WINCH_ASSEMBLY_si.png)](https://user-images.githubusercontent.com/80153186/199442516-3141fbd5-801f-41b6-bb06-c01fbd51d062.mp4) | [![Video of optimal state estimation](docs/Media/WINCH_ASSEMBLY_ope.png)](https://user-images.githubusercontent.com/80153186/200439513-676ddcd6-6ddc-4a94-982e-7b6b8a6093e2.mp4)
 
 ## Physical design
 
