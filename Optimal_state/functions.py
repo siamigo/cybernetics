@@ -24,10 +24,6 @@ def arduino_send_receive(estimate):
 def arduino_has_been_reset():
     print("Arduino is offline.. Resetting")
 
-def readFile(filename):
-    data_raw = np.loadtxt(filename, delimiter=' ', skiprows=0, dtype=float)
-    return [data_raw[:,i] for i, _ in enumerate(data_raw[0])]
-
 def kalman_predict_x(Ad, x_m1, Bd, u_km1):
     x_kd = np.dot(Ad, x_m1) + np.dot(Bd, u_km1)
     return x_kd
@@ -67,3 +63,11 @@ def write_csv(data , filename):
         writer = csv.writer(f)
         writer.writerow(data)
     f.close()
+
+def readFile(filename):
+    data_raw = np.loadtxt(filename, delimiter=' ', skiprows=0, dtype=float)
+    return [data_raw[:,i] for i, _ in enumerate(data_raw[0])]
+
+def readFileComma(filename):
+    data_raw = np.loadtxt(filename, delimiter=',', skiprows=0, dtype=float)
+    return [data_raw[:,i] for i, _ in enumerate(data_raw[0])]

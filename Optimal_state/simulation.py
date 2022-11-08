@@ -1,13 +1,13 @@
 from functions import *
+import matplotlib.pyplot as plt
 
 # All functions are in functions.py, as well as library imports
 
-DEBUG = True # Print values and add a delay
+DEBUG = False # Print values and add a delay
 delay = 0.25
 
 ar = 9.2 / 2 # axle radius in mm
-dt = 1.0
-prevAngle = 0.0
+dt = 0.32
 
 dRaw, vRaw, aRaw = readFile('Optimal_state\TestValues.txt') # Read the test values from a file
 R = cal_covar(dRaw, vRaw, aRaw) # Calculate the covariance matrix
@@ -17,7 +17,7 @@ R = cal_covar(dRaw, vRaw, aRaw) # Calculate the covariance matrix
 #R[2, 2] += 0.1
 
 dRawQ, vRawQ, aRawQ = readFile('Optimal_state\QtestValues.txt') # Not used as measurements was done incorrectly
-Q = np.array([[3, 0., 0.3],[0.0,0.0,0.0], [0.3, 0.0, 0.1]]) # Tuned Q matrix manually
+Q = cal_covar(dRawQ, vRawQ, aRawQ) # Tuned Q matrix manually
 
 P_km1 = R # Initial process covariance
 
@@ -32,24 +32,23 @@ H = np.identity(len(R))
 B = 0.0
 u = 0.0
 
-if DEBUG:
-    print("R: ")
-    print(R)
-    print("Q: ")
-    print(Q)
+r_d, r_v, r_a, e_d, e_v, e_a = [], [], [], [], [], []
+# if DEBUG:
+#     print("R: ")
+#     print(R)
+#     print("Q: ")
+#     print(Q)
 
-simFile = readFileComma('\Optimal_state\kalman_data.csv')
-for index, value in enumerate(simFile):
-        dt = simFile[6]
+dis, vel, acc, est_dis, est_vel, est_acc, time = readFileComma('Optimal_state\kalman_data\kalman_data.csv')
+for i, _ in enumerate(time):
+        dt = time[i]
 
         x_kp = kalman_predict_x(A_km1, x_km1, B, u)
         P_kp = kalman_predict_P(A_km1, P_km1, Q)
 
-        v = simFile[1]
-        a = simFile[2]
-        d = simFile[0]
-        
-        prevAngle = [0]
+        v = vel[i]
+        a = acc[i]
+        d = dis[i]
 
         # x measurements matrix
         x_kmes[0] = d
@@ -85,9 +84,44 @@ for index, value in enumerate(simFile):
         x_km1 = x_k
         P_km1 = P_k
 
-        #arr = np.concatenate((Yk[:,0], x_k[:,0], [dt]))
-        #write_csv(arr, "kalman_data3.csv")
-        #t.sleep(0.05)
+        val = np.concatenate((Yk[:,0], x_k[:,0]))
+        r_d.append(val[0])
+        r_v.append(val[1])
+        r_a.append(val[2])
+        e_d.append(val[3])
+        e_v.append(val[4])
+        e_a.append(val[5])
 
+
+t_time = []
+for count, element in enumerate(time):
+    if count == 0:
+        t_time.append(element)
     else:
-        arduino_has_been_reset()
+        t_time.append(element+t_time[count-1])
+
+plt.close(1); plt.figure(1, figsize=(8, 6))
+
+plt.subplot(311)
+plt.plot(t_time, r_d, label='$rd$', color='orange')
+plt.plot(t_time, e_d, label='$ed$', color='blue')
+plt.ylabel(r'Distance [mm]')
+plt.xlabel(r'Time[s]')
+plt.title('Sensor estimate and real values')
+plt.legend()
+
+plt.subplot(312)
+plt.plot(t_time, r_v, label='$rv$', color='orange')
+plt.plot(t_time, e_v, label='$ev$', color='blue')
+plt.ylabel(r'Velocity [mm/s]')
+plt.xlabel(r'Time[s]')
+plt.legend()
+
+plt.subplot(313)
+plt.plot(t_time, r_a, label='$ra$', color='orange')
+plt.plot(t_time, e_a, label='$ea$', color='blue')
+plt.ylabel(r'Acceleration $[m/s^2]$')
+plt.xlabel(r'Time[s]')
+plt.legend()
+
+plt.show()
