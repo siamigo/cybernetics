@@ -2,7 +2,7 @@ from functions import *
 
 # All functions are in functions.py, as well as library imports
 
-DEBUG = True # Print values and add a delay
+DEBUG = False # Print values and add a delay
 delay = 0.25
 
 ar = 9.2 / 2 # axle radius in mm
@@ -17,7 +17,7 @@ R = cal_covar(dRaw, vRaw, aRaw) # Calculate the covariance matrix
 #R[2, 2] += 0.1
 
 dRawQ, vRawQ, aRawQ = readFile('Optimal_state\QtestValues.txt') # Not used as measurements was done incorrectly
-Q = np.array([[3, 0., 0.3],[0.0,0.0,0.0], [0.3, 0.0, 0.1]]) # Tuned Q matrix manually
+Q = cal_covar(dRawQ, vRawQ, aRawQ) #np.array([[3, 0., 0.3],[0.0,0.0,0.0], [0.3, 0.0, 0.1]]) # Tuned Q matrix manually
 
 P_km1 = R # Initial process covariance
 
@@ -86,8 +86,8 @@ while 1:
         x_km1 = x_k
         P_km1 = P_k
 
-        #arr = np.concatenate((Yk[:,0], x_k[:,0], [dt]))
-        #write_csv(arr, "kalman_data3.csv")
+        arr = np.concatenate((Yk[:,0], x_k[:,0], [dt]))
+        write_csv(arr, 'kalman_data4.csv')
         #t.sleep(0.05)
 
     else:
