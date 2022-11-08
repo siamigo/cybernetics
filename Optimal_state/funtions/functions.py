@@ -2,6 +2,7 @@ import time as t
 from socket import *
 import numpy as np
 import csv
+import matplotlib.pyplot as plt
 
 udp_socket = socket(AF_INET, SOCK_DGRAM)
 udp_socket.settimeout(1)
@@ -61,6 +62,10 @@ def cal_covar(dList, vList, aList):
                    [a_var*d_var, a_var*v_var, a_var]])
     
     return Rd
+
+def readFileComma(filename):
+    data_raw = np.loadtxt(filename, delimiter=',', dtype=float)
+    return [data_raw[:,i] for i, _ in enumerate(data_raw[0])]
 
 def write_csv(data , filename):
     with open(filename, 'a', encoding='UTF8', newline='') as f:

@@ -1,11 +1,6 @@
-import numpy as np
-import matplotlib.pyplot as plt
+from funtions.functions import *
 
-def readFile(filename):
-    data_raw = np.loadtxt(filename, delimiter=',', dtype=float)
-    return [data_raw[:,i] for i, _ in enumerate(data_raw[0])]
-
-r_d, r_v, r_a, e_d, e_v, e_a, dt = readFile('Optimal_state\kalman_data\kalman_data3.csv')
+r_d, r_v, r_a, e_d, e_v, e_a, dt = readFileComma('Optimal_state\kalman_data\kalman_data3.csv')
 
 #e_a/=1000
 time = []

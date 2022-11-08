@@ -1,4 +1,4 @@
-from functions import *
+from funtions.functions import *
 
 # All functions are in functions.py, as well as library imports
 
