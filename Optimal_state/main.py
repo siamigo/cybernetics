@@ -86,8 +86,8 @@ while 1:
         x_km1 = x_k
         P_km1 = P_k
 
-        arr = np.concatenate((Yk[:,0], x_k[:,0], [dt]))
-        write_csv(arr, 'kalman_data4.csv')
+        arr = np.concatenate((Yk[:,0], x_kp[:,0], [dt]))
+        write_csv(arr, 'kalman_data5.csv')
         #t.sleep(0.05)
 
     else:
