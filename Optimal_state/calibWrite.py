@@ -1,9 +1,9 @@
 from funtions.functions import *
-# All functions are in functions.py, as well as library imports
+
 delay = 0.25
 
-ar = 9.2 / 2 # axle radius in mm
-dt = 1.0
+ar = 9.2 / 2
+dt = .032
 prevAngle = 0.0
 
 estimate = 0.0

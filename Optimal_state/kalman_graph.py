@@ -1,8 +1,7 @@
 from funtions.functions import *
 
-r_d, r_v, r_a, e_d, e_v, e_a, dt = readFileComma('Optimal_state\kalman_data\kalman_data3.csv')
+r_d, r_v, r_a, e_d, e_v, e_a, dt = readFileComma('Optimal_state\kalman_data\kalman_data6.csv')
 
-#e_a/=1000
 time = []
 for count, element in enumerate(dt):
     if count == 0:

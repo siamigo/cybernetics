@@ -1,9 +1,11 @@
+#----------------------------------------------------------------All python libraries----------------------------------------------------------------
 import time as t
 from socket import *
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
 
+#----------------------------------------------------------------Communication----------------------------------------------------------------
 udp_socket = socket(AF_INET, SOCK_DGRAM)
 udp_socket.settimeout(1)
 
@@ -25,10 +27,7 @@ def arduino_send_receive(estimate):
 def arduino_has_been_reset():
     print("Arduino is offline.. Resetting")
 
-def readFile(filename):
-    data_raw = np.loadtxt(filename, delimiter=' ', skiprows=0, dtype=float)
-    return [data_raw[:,i] for i, _ in enumerate(data_raw[0])]
-
+#---------------------------------------------------------------- Kalman----------------------------------------------------------------
 def kalman_predict_x(Ad, x_m1, Bd, u_km1):
     x_kd = np.dot(Ad, x_m1) + np.dot(Bd, u_km1)
     return x_kd
@@ -62,9 +61,13 @@ def cal_covar(dList, vList, aList):
                    [a_var*d_var, a_var*v_var, a_var]])
     
     return Rd
-
+#----------------------------------------------------------------File handling----------------------------------------------------------------
 def readFileComma(filename):
     data_raw = np.loadtxt(filename, delimiter=',', dtype=float)
+    return [data_raw[:,i] for i, _ in enumerate(data_raw[0])]
+
+def readFile(filename):
+    data_raw = np.loadtxt(filename, delimiter=' ', skiprows=0, dtype=float)
     return [data_raw[:,i] for i, _ in enumerate(data_raw[0])]
 
 def write_csv(data , filename):
@@ -72,3 +75,8 @@ def write_csv(data , filename):
         writer = csv.writer(f)
         writer.writerow(data)
     f.close()
+
+#----------------------------------------------------------------Gravity correction----------------------------------------------------------------
+def sensorError(sensor_raw):
+    avr = np.average(sensor_raw)
+    return np.array([np.average(value)-avr for index, value in enumerate(sensor_raw)]), avr
