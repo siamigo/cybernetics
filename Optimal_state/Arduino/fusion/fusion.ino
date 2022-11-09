@@ -53,6 +53,7 @@ float Pi = 3.14159;
 
 unsigned int oldT = 0;
 unsigned int dt = 1;
+int quit = 0;
 
 void setup() 
 {
@@ -138,7 +139,8 @@ void loop()
     sensor_values.concat(angle); sensor_values.concat(",");
     sensor_values.concat(accel[2]*9.81); sensor_values.concat(",");
     sensor_values.concat(d); sensor_values.concat(",");
-    sensor_values.concat(dt);
+    sensor_values.concat(dt); sensor_values.concat(",");
+    sensor_values.concat(quit);
 
     udp_server.read(packet_buffer, UDP_TX_PACKET_MAX_SIZE);
     float x_k = String(packet_buffer).toFloat();
@@ -213,6 +215,7 @@ void loop()
           Serial.println(x_k);
           motorOn = false;
           idle = true;
+          quit = 1;
         }   
 
         break;

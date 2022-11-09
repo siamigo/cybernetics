@@ -222,16 +222,6 @@ void loop()
     eprev = e;
   
     int voltage = pwrT/255.*12.*1000.;
-    /*
-    Serial.print("Case Nr: "); Serial.println(caseNr);
-    Serial.print("Pos:  "); Serial.println(pos);
-    Serial.print("Target: "); Serial.println(target);
-    Serial.print("TargetDown: "); Serial.println(targetDown);
-    
-    Serial.print(voltage);
-    Serial.print(" ");
-    Serial.print(x_k);
-    Serial.println();*/
   }
 }
 

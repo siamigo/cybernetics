@@ -2,21 +2,21 @@ from funtions.functions import *
 
 # All functions are in functions.py, as well as library imports
 
-DEBUG = True # Print values and add a delay
+DEBUG = False # Print values and add a delay
 delay = 0.25
 
 ar = 9.2 / 2 # axle radius in mm
 dt = 1.0
 prevAngle = 0.0
 
-dRaw, vRaw, aRaw = readFile('Optimal_state\TestValues.txt') # Read the test values from a file
+dRaw, vRaw, aRaw, dtR = readFileComma('Optimal_state\calibR_data.csv') # Read the test values from a file
 R = cal_covar(dRaw, vRaw, aRaw) # Calculate the covariance matrix
 #R[0, 0] += 20.0
 #R[0, 2] += 0.02
 #R[2, 0] += 0.02
 #R[2, 2] += 0.1
 
-dRawQ, vRawQ, aRawQ = readFile('Optimal_state\QtestValues.txt') # Not used as measurements was done incorrectly
+dRawQ, vRawQ, aRawQ, dtQ = readFileComma('Optimal_state\calibQ_data.csv') # Not used as measurements was done incorrectly
 Q = cal_covar(dRawQ, vRawQ, aRawQ) #np.array([[3, 0., 0.3],[0.0,0.0,0.0], [0.3, 0.0, 0.1]]) # Tuned Q matrix manually
 
 P_km1 = R # Initial process covariance
@@ -49,6 +49,7 @@ while 1:
         v = (sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt # Calculate linear velocity from angular velocity, using encoder angle measured in degrees
         a = sensor_values[1] - 9.81 # Get acceleration measurement and gravity compensate
         d = sensor_values[2]
+        stop = sensor_values[3]
         
         prevAngle = sensor_values[0]
 
@@ -86,8 +87,9 @@ while 1:
         x_km1 = x_k
         P_km1 = P_k
 
-        arr = np.concatenate((Yk[:,0], x_kp[:,0], [dt]))
-        write_csv(arr, 'kalman_data5.csv')
+        if (stop == 0):
+            arr = np.concatenate((Yk[:,0], x_kp[:,0], [dt]))
+            write_csv(arr, 'kalman_data5.csv')
         #t.sleep(0.05)
 
     else:

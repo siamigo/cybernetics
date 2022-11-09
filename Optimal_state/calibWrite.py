@@ -20,8 +20,7 @@ while(True):
         prevAngle=sensor_values[0]
 
         if(stop==0.):
-            arr=np.array[d, v, a, dt]
-            write_csv(arr, 'calibQ_data.csv')
-
+            arr=[d, v, a, dt]
+            write_csv(arr, 'calibQ_data1.csv')
     else:
         arduino_has_been_reset()
