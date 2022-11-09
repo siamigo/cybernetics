@@ -12,16 +12,16 @@ def main():
     delay = 0.25
     ar = 9.2 / 2 # axle radius in mm
 #----------------------------------------------------------------Filehandling----------------------------------------------------------------
-    dRaw, vRaw, aRaw, dtR = readFileComma('Optimal_state\calibrationdata\calibR_data.csv') # Read the test values from a file
-    dRawQ, vRawQ, aRawQ, dtQ = readFileComma('Optimal_state\calibrationdata\calibQ_data.csv')
+    dRaw, vRaw, aRaw, dtR = readFileComma('Optimal_state\calibrationdata\calibR_data.csv')
+    dRawQ, vRawQ, aRawQ, dtR = readFileComma('Optimal_state\calibrationdata\calibQ_data.csv')
 #----------------------------------------------------------------Accelerometer gravity correction----------------------------------------------------------------
     accR, avrR = sensorError(aRaw)
     accQ, avrQ = sensorError(aRawQ)
-    acc_error=(avrR+avrQ)/2
 #----------------------------------------------------------------Noize matrixes----------------------------------------------------------------
 
     Q = cal_covar(dRawQ, vRawQ, accQ) #np.array([[3, 0., 0.3],[0.0,0.0,0.0], [0.3, 0.0, 0.1]]) # Tuned Q matrix manually
     R = cal_covar(dRaw, vRaw, accR) # Calculate the covariance matrix
+    print(Q)
     #R[0, 0] += 20.0
     #R[0, 2] += 0.02
     #R[2, 0] += 0.02
@@ -51,7 +51,7 @@ def main():
     #     print("Q: ")
     #     print(Q)
 
-    dis, vel, acc, est_dis, est_vel, est_acc, time = readFileComma('Optimal_state\kalman_data\kalman_data6.csv')
+    dis, vel, acc, est_dis, est_vel, est_acc, time = readFileComma('Optimal_state\kalman_data\kalman_data1.csv')
     for i, _ in enumerate(time):
             dt = time[i]
 
