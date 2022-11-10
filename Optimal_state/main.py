@@ -31,16 +31,16 @@ def main():
     dt = .032
     prevAngle = 0.0
 
-    P_km1 = R # Initial process covariance
+    P_km1 = R # Initial error covariance
 
     A_km1 = np.array([[1.0, dt, 0.5*(dt**2.0)], 
                       [0.0, 1.0, dt], 
                       [0.0, 0.0, 1.0]])
 
-    x_km1 = np.transpose(np.array([[0.0, 0.0, 0.0]])) # Initial state
-    x_kmes = x_km1 # Just for definition
+    x_km1 = np.transpose(np.array([[0.0, 0.0, 0.0]])) # Initial state matrix
+    x_kmes = x_km1 # Initial measurement matrix
     
-    H = np.identity(len(R))
+    H = np.identity(len(x_kmes))
     B = 0.0
     u = 0.0
 
