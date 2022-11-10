@@ -4,7 +4,7 @@ from socket import *
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
-
+import statistics as st
 #----------------------------------------------------------------Communication----------------------------------------------------------------
 udp_socket = socket(AF_INET, SOCK_DGRAM)
 udp_socket.settimeout(1)

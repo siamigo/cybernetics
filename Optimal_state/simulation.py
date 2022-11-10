@@ -19,14 +19,13 @@ def main():
     accQ, avrQ = sensorError(aRawQ)
 #----------------------------------------------------------------Noize matrixes----------------------------------------------------------------
 
-    Q = cal_covar(dRawQ, vRawQ, accQ) #np.array([[3, 0., 0.3],[0.0,0.0,0.0], [0.3, 0.0, 0.1]]) # Tuned Q matrix manually
+    Qi = cal_covar(dRawQ, vRawQ, accQ) #np.array([[3, 0., 0.3],[0.0,0.0,0.0], [0.3, 0.0, 0.1]]) # Tuned Q matrix manually
     R = cal_covar(dRaw, vRaw, accR) # Calculate the covariance matrix
-    print(Q)
-    #R[0, 0] += 20.0
-    #R[0, 2] += 0.02
-    #R[2, 0] += 0.02
-    #R[2, 2] += 0.1
-
+    dataR = np.array([dRaw, vRaw, accR])
+    Rt=np.cov(dataR, bias=True)
+    dataQ = np.array([dRawQ, vRawQ, accQ])
+    Qt=np.cov(dataQ, bias=True)
+    Q=np.array([[7000, 0.5, 3.3], [0.1,    1,    0.0], [3.3, 0.006, 2.3]])
 #----------------------------------------------------------------Initial values----------------------------------------------------------------
     dt = .032
     prevAngle = 0.0
