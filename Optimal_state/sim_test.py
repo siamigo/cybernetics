@@ -5,9 +5,6 @@ from funtions.functions import *
 
 def main():
 
-    DEBUG = False # Print values and add a delay
-    delay = 0.32
-    ar = 9.2 / 2 # axle radius in mm
 #----------------------------------------------------------------Filehandling----------------------------------------------------------------
     dRaw, vRaw, aRaw, dtR = readFileComma('Optimal_state\calibrationdata\calibR_data.csv')
     dRawQ, vRawQ, aRawQ, dtR = readFileComma('Optimal_state\calibrationdata\calibQ_data.csv')
@@ -37,11 +34,6 @@ def main():
     u = 0.0
 
     r_d, r_v, r_a, e_d, e_v, e_a = [], [], [], [], [], []
-    # if DEBUG:
-    #     print("R: ")
-    #     print(R)
-    #     print("Q: ")
-    #     print(Q)
 
     #---------------------------------------------------------------- Kalman loop----------------------------------------------------------------
     for i, _ in enumerate(time):
