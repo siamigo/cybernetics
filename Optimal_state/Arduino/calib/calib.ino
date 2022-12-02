@@ -44,7 +44,7 @@ int caseNr = 0;
 const int startPlatform = 0;
 const int endOnKalman = 1;
 
-int stop = 0;
+int stop = 1;
 
 float Pi = 3.14159;
 
@@ -161,6 +161,7 @@ void loop()
           target = targetDown;
           dir = -1;
           motorOn = true;
+          stop = 0;
         }
 
         break;
@@ -168,13 +169,15 @@ void loop()
       case endOnKalman:
         if (idle) 
         {
-          stop = 1;
+          Serial.println("Idle");
+          delay(1000);
           break;
         }
         else if (pos >= targetDown)
         {
           Serial.println(x_k);
           motorOn = false;
+          stop = 1;
           idle = true;
         }   
 

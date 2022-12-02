@@ -5,6 +5,8 @@ dt = .032
 prevAngle = 0.0
 prev_d = 0.0
 
+firstPass = True
+
 while(True):
     sensor_values = arduino_send_receive(prevAngle)
     if(sensor_values is not None):
@@ -20,7 +22,10 @@ while(True):
         prevAngle = sensor_values[0]
 
         if(stop==0.):
-            arr=[delta_d, v, a, dt]
-            write_csv(arr, 'calibQ_data1.csv')
+            if firstPass:
+                firstPass = False
+            else:
+                arr=[delta_d, v, a, dt]
+                write_csv(arr, 'Optimal_state/calibrationdata/calibQ_data.csv')
     else:
         arduino_has_been_reset()

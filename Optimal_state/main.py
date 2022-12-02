@@ -3,7 +3,7 @@ from funtions.functions import *
 # All functions are in functions.py, as well as library imports
 def main():
 
-    DEBUG = False # Print values and add a delay
+    DEBUG = True # Print values and add a delay
     delay = 0.25
     ar = 9.2 / 2 # axle radius in mm
 #----------------------------------------------------------------Filehandling----------------------------------------------------------------
@@ -27,6 +27,8 @@ def main():
         print(R)
         print("Q: ")
         print(Q)
+        print("acc_error: ")
+        print(acc_error)
 #----------------------------------------------------------------Initial values----------------------------------------------------------------
     dt = .032
     prevAngle = 0.0
