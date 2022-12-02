@@ -140,8 +140,6 @@ void loop()
 
     udp_server.read(packet_buffer, UDP_TX_PACKET_MAX_SIZE);
     float x_k = String(packet_buffer).toFloat();
-    //Serial.print("Updated x_k:  "); Serial.println(x_k);
-    //Serial.print("Measured distance:  "); Serial.println(d);
 
     udp_server.beginPacket(udp_server.remoteIP(), udp_server.remotePort());
     udp_server.write(sensor_values.c_str(), sensor_values.length());

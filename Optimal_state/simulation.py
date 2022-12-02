@@ -8,22 +8,18 @@ def main():
 #----------------------------------------------------------------Filehandling----------------------------------------------------------------
     dRaw, vRaw, aRaw, _ = readFileComma('Optimal_state\calibrationdata\calibR_data.csv')
     dRawQ, vRawQ, aRawQ, _ = readFileComma('Optimal_state\calibrationdata\calibQ_data.csv')
-    dis, vel, acc, _, _, _, time = readFileComma('Optimal_state\kalman_data\kalman_data1.csv')
+    dis, vel, acc, _, _, _, time = readFileComma('Optimal_state\kalman_data\kalman_data.csv')
 #----------------------------------------------------------------Accelerometer gravity correction----------------------------------------------------------------
     accR, _ = sensorError(aRaw)
     accQ, _ = sensorError(aRawQ)
 #----------------------------------------------------------------Noize matrixes----------------------------------------------------------------
 
-    Qi = cal_covar(dRawQ, vRawQ, accQ)
+    Q = cal_covar(dRawQ, vRawQ, accQ)
     R = cal_covar(dRaw, vRaw, accR)
-    dataR = np.array([dRaw, vRaw, accR])
-    Rt=np.cov(dataR, bias=True)
-    dataQ = np.array([dRawQ, vRawQ, accQ])
-    Qt=np.cov(dataQ, bias=True)
-    Q=np.array([[7000, 0, 3.3], [0.1,    0,    0.0], [3.3, 0, 2.3]])
+    
+    #Q=np.array([[7000, 0, 3.3], [0.1,    0,    0.0], [3.3, 0, 2.3]])
 #----------------------------------------------------------------Initial values----------------------------------------------------------------
     dt = .032
-    prevAngle = 0.0
 
     P_km1 = R 
 

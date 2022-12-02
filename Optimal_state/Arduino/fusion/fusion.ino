@@ -24,6 +24,7 @@ char packet_buffer[UDP_TX_PACKET_MAX_SIZE];
 #define IN1 7
 const int START = 26;
 
+int stop = 1;
 bool motorOn = false;
 int dir = -1;
 bool idle = false;
@@ -53,7 +54,6 @@ float Pi = 3.14159;
 
 unsigned int oldT = 0;
 unsigned int dt = 1;
-int quit = 0;
 
 void setup() 
 {
@@ -140,12 +140,10 @@ void loop()
     sensor_values.concat(accel[2]*9.81); sensor_values.concat(",");
     sensor_values.concat(d); sensor_values.concat(",");
     sensor_values.concat(dt); sensor_values.concat(",");
-    sensor_values.concat(quit);
+    sensor_values.concat(stop);
 
     udp_server.read(packet_buffer, UDP_TX_PACKET_MAX_SIZE);
     float x_k = String(packet_buffer).toFloat();
-    //Serial.print("Updated x_k:  "); Serial.println(x_k);
-    //Serial.print("Measured distance:  "); Serial.println(d);
 
     udp_server.beginPacket(udp_server.remoteIP(), udp_server.remotePort());
     udp_server.write(sensor_values.c_str(), sensor_values.length());
@@ -167,6 +165,7 @@ void loop()
           caseNr = down;
           target = targetDown;
           dir = -1;
+          stop = 0;
           motorOn = true;
         }
 
@@ -205,7 +204,7 @@ void loop()
           
         break;
 
-      case endOnKalman:
+      case endOnKalman: //Stop motor and print kalman filter value
         if (idle) 
         {
           break;
@@ -214,8 +213,8 @@ void loop()
         {
           Serial.println(x_k);
           motorOn = false;
+          stop = 1;
           idle = true;
-          quit = 1;
         }   
 
         break;
@@ -262,16 +261,6 @@ void loop()
     eprev = e;
   
     int voltage = pwrT/255.*12.*1000.;
-    /*
-    Serial.print("Case Nr: "); Serial.println(caseNr);
-    Serial.print("Pos:  "); Serial.println(pos);
-    Serial.print("Target: "); Serial.println(target);
-    Serial.print("TargetDown: "); Serial.println(targetDown);
-    
-    Serial.print(voltage);
-    Serial.print(" ");
-    Serial.print(x_k);
-    Serial.println();*/
   }
 }
 

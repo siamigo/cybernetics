@@ -1,6 +1,6 @@
 from funtions.functions import *
 
-r_d, r_v, r_a, e_d, e_v, e_a, dt = readFileComma('Optimal_state\kalman_data\kalman_data6.csv')
+r_d, r_v, r_a, e_d, e_v, e_a, dt = readFileComma('Optimal_state\kalman_data\kalman_data.csv')
 
 time = []
 for count, element in enumerate(dt):

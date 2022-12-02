@@ -4,6 +4,7 @@ from funtions.functions import *
 def main():
 
     DEBUG = True # Print values and add a delay
+    plotGraph = False # Plot the graph
     delay = 0.25
     ar = 9.2 / 2 # axle radius in mm
 #----------------------------------------------------------------Filehandling----------------------------------------------------------------
@@ -17,10 +18,6 @@ def main():
 
     Q = cal_covar(dRawQ, vRawQ, accQ) #np.array([[3, 0., 0.3],[0.0,0.0,0.0], [0.3, 0.0, 0.1]]) # Tuned Q matrix manually
     R = cal_covar(dRaw, vRaw, accR) # Calculate the covariance matrix
-    #R[0, 0] += 20.0
-    #R[0, 2] += 0.02
-    #R[2, 0] += 0.02
-    #R[2, 2] += 0.1
 
     if DEBUG:
         print("R: ")
@@ -55,7 +52,7 @@ def main():
             P_kp = kalman_predict_P(A_km1, P_km1, Q)
 
             v = (sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt # Calculate linear velocity from angular velocity, using encoder angle measured in degrees
-            a = sensor_values[1]-acc_error  # Get acceleration measurement and gravity compensate
+            a = sensor_values[1] - acc_error  # Get acceleration measurement and gravity compensate
             d = sensor_values[2]
             stop = sensor_values[4]
 
@@ -95,10 +92,9 @@ def main():
             x_km1 = x_k
             P_km1 = P_k
 
-            if (stop == 0.):
-                arr = np.concatenate((Yk[:,0], x_kp[:,0], [dt]))
-                write_csv(arr, 'kalman_data6.csv')
-            #t.sleep(0.05)
+            if (stop == 0.) and plotGraph:
+                arr = np.concatenate((Yk[:,0], x_k[:,0], [dt]))
+                write_csv(arr, 'Optimal_state/kalman_data/kalman_data.csv')
 
         else:
             arduino_has_been_reset()
