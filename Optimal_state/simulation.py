@@ -1,24 +1,18 @@
 from funtions.functions import *
 
-
-# All functions are in functions.py, as well as library imports
-
 def main():
 
-#----------------------------------------------------------------Filehandling----------------------------------------------------------------
+#------------------------------------ Filehandling ------------------------------------
     dRaw, vRaw, aRaw, _ = readFileComma('Optimal_state\calibrationdata\calibR_data.csv')
     dRawQ, vRawQ, aRawQ, _ = readFileComma('Optimal_state\calibrationdata\calibQ_data.csv')
     dis, vel, acc, _, _, _, time = readFileComma('Optimal_state\kalman_data\kalman_data.csv')
-#----------------------------------------------------------------Accelerometer gravity correction----------------------------------------------------------------
+#------------------------------------ Accelerometer gravity correction ------------------------------------
     accR, _ = sensorError(aRaw)
     accQ, _ = sensorError(aRawQ)
-#----------------------------------------------------------------Noize matrixes----------------------------------------------------------------
-
+#------------------------------------Noize matrixes-------------------------------------
     Q = cal_covar(dRawQ, vRawQ, accQ)
     R = cal_covar(dRaw, vRaw, accR)
-    
-    #Q=np.array([[7000, 0, 3.3], [0.1,    0,    0.0], [3.3, 0, 2.3]])
-#----------------------------------------------------------------Initial values----------------------------------------------------------------
+#------------------------------------Initial values ------------------------------------
     dt = .032
 
     P_km1 = R 
@@ -36,7 +30,7 @@ def main():
 
     r_d, r_v, r_a, e_d, e_v, e_a = [], [], [], [], [], []
    
-#----------------------------------------------------------------Kalman loop----------------------------------------------------------------
+#------------------------------------ Kalman loop ------------------------------------
     for i, _ in enumerate(time):
             dt = time[i]
 
@@ -73,15 +67,9 @@ def main():
             e_v.append(val[4])
             e_a.append(val[5])
 
+#------------------------------------ Plotting ------------------------------------
+    t_time = plotTime(time)
 
-    t_time = []
-    for count, element in enumerate(time):
-        if count == 0:
-            t_time.append(element)
-        else:
-            t_time.append(element+t_time[count-1])
-
-#----------------------------------------------------------------Plotting----------------------------------------------------------------
     plt.close(1); plt.figure(1, figsize=(8, 6))
 
     plt.subplot(311)
