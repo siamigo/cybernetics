@@ -1,13 +1,10 @@
 from funtions.functions import *
 
-delay = 0.25
-
 ar = 9.2 / 2
 dt = .032
 prevAngle = 0.0
+prev_d = 0.0
 
-estimate = 0.0
-delta = 1.0
 while(True):
     sensor_values = arduino_send_receive(prevAngle)
     if(sensor_values is not None):
@@ -17,10 +14,13 @@ while(True):
         dt=sensor_values[3]
         stop=sensor_values[4]
 
-        prevAngle=sensor_values[0]
+        delta_d = d - prev_d
+
+        prev_d = d
+        prevAngle = sensor_values[0]
 
         if(stop==0.):
-            arr=[d, v, a, dt]
+            arr=[delta_d, v, a, dt]
             write_csv(arr, 'calibQ_data1.csv')
     else:
         arduino_has_been_reset()

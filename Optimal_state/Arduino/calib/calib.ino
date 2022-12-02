@@ -148,7 +148,7 @@ void loop()
     udp_server.endPacket();
 
     // Target = theta(rad)/axelRadius * 1024 / 2pi
-    int targetDown = targetDownMm / ar * 1024./(2.*Pi) - 2250; // Convert to encoder ticks from target distance
+    int targetDown = targetDownMm / ar * 1024./(2.*Pi) - 2250; // Convert to encoder ticks from target distance - offset
     switch (caseNr)
     {
       case startPlatform:
