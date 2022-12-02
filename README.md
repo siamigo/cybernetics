@@ -42,6 +42,8 @@ Test video - System identification          |  Test video - Optimal State Estima
 * [Numpy](https://numpy.org/)
 * [Socket](https://docs.python.org/3/library/socket.html)
 * [Time](https://docs.python.org/3/library/time.html?highlight=time#module-time)
+* [csv](https://docs.python.org/3/library/csv.html)
+* [matplotlib](https://matplotlib.org/)
 
 #### Arduino libraries
 * [HardWire](https://github.com/thexeno/HardWire-Arduino-Library)
