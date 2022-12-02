@@ -5,71 +5,74 @@ from funtions.functions import *
 
 def main():
 
+    DEBUG = False # Print values and add a delay
+    delay = 0.32
+    ar = 9.2 / 2 # axle radius in mm
 #----------------------------------------------------------------Filehandling----------------------------------------------------------------
-    dRaw, vRaw, aRaw, _ = readFileComma('Optimal_state\calibrationdata\calibR_data.csv')
-    dRawQ, vRawQ, aRawQ, _ = readFileComma('Optimal_state\calibrationdata\calibQ_data.csv')
-    dis, vel, acc, _, _, _, time = readFileComma('Optimal_state\kalman_data\kalman_data1.csv')
+    dRaw, vRaw, aRaw, dtR = readFileComma('Optimal_state\calibrationdata\calibR_data.csv')
+    dRawQ, vRawQ, aRawQ, dtR = readFileComma('Optimal_state\calibrationdata\calibQ_data.csv')
+    dis, vel, acc, est_dis, est_vel, est_acc, time = readFileComma('Optimal_state\kalman_data\kalman_data1.csv')
 #----------------------------------------------------------------Accelerometer gravity correction----------------------------------------------------------------
-    accR, _ = sensorError(aRaw)
-    accQ, _ = sensorError(aRawQ)
+    accR, avrR = sensorError(aRaw)
+    accQ, avrQ = sensorError(aRawQ)
 #----------------------------------------------------------------Noize matrixes----------------------------------------------------------------
-
-    Qi = cal_covar(dRawQ, vRawQ, accQ)
-    R = cal_covar(dRaw, vRaw, accR)
-    dataR = np.array([dRaw, vRaw, accR])
-    Rt=np.cov(dataR, bias=True)
-    dataQ = np.array([dRawQ, vRawQ, accQ])
-    Qt=np.cov(dataQ, bias=True)
-    Q=np.array([[7000, 0.5, 3.3], [0.1,    1,    0.0], [3.3, 0.006, 2.3]])
+    R=np.array([[np.var(dRaw)],[np.var(vRaw)],[np.var(accR)]])
+    Q=cal_covar(dRawQ, vRawQ,accQ)
 #----------------------------------------------------------------Initial values----------------------------------------------------------------
     dt = .032
     prevAngle = 0.0
 
-    P_km1 = R 
+    P = cal_covar(dRaw, vRaw,accR)
 
-    A_km1 = np.array([[1.0, dt, 0.5*(dt**2.0)], 
+    A = np.array([[1.0, dt, 0.5*(dt**2.0)], 
                       [0.0, 1.0, dt], 
                       [0.0, 0.0, 1.0]])
 
     x_km1 = np.transpose(np.array([[0.0, 0.0, 0.0]]))
-    x_kmes = x_km1
+    x = x_km1
     
-    H = np.identity(len(R))
+    P_p=A*P*np.transpose(A)+Q
+    H = [1, 1, 1]
     B = 0.0
     u = 0.0
 
     r_d, r_v, r_a, e_d, e_v, e_a = [], [], [], [], [], []
-   
-#----------------------------------------------------------------Kalman loop----------------------------------------------------------------
+    # if DEBUG:
+    #     print("R: ")
+    #     print(R)
+    #     print("Q: ")
+    #     print(Q)
+
+    #---------------------------------------------------------------- Kalman loop----------------------------------------------------------------
     for i, _ in enumerate(time):
             dt = time[i]
-
-            x_kp = kalman_predict_x(A_km1, x_km1, B, u)
-            P_kp = kalman_predict_P(A_km1, P_km1, Q)
 
             v = vel[i]
             a = acc[i]
             d = dis[i]
 
-            x_kmes[0] = d
-            x_kmes[1] = v
-            x_kmes[2] = a
+            # x measurements matrix
+            x[0] = d
+            x[1] = v
+            x[2] = a
 
-            Yk = np.dot(H, x_kmes)
+            z = np.dot(H, x)
 
-            K = kalman_gain(P_kp, H, R)
+            X_p=A*x
 
-            x_k = kalman_newstate(x_kp, K, Yk, H)
-            P_k = kalman_newerror(K, H, P_kp)
+            s=H*P_p*np.transpose(H)+R
 
-            A_km1 = np.array([[1.0, dt, 0.5*(dt**2.0)], 
+            K = P*(np.transpose(H)*(1/s))
+
+            X_k=X_p+K*(z-H*X_p)
+            P_k = P_p-K*H*P_p
+
+            print(s)
+            A = np.array([[1.0, dt, 0.5*(dt**2.0)], 
                               [0.0, 1.0, dt], 
                               [0.0, 0.0, 1.0]])
-
-            x_km1 = x_k
-            P_km1 = P_k
-
-            val = np.concatenate((Yk[:,0], x_k[:,0]))
+            print(z, X_k)
+            val = np.concatenate((z, X_k[:,0]))
             r_d.append(val[0])
             r_v.append(val[1])
             r_a.append(val[2])
@@ -85,7 +88,6 @@ def main():
         else:
             t_time.append(element+t_time[count-1])
 
-#----------------------------------------------------------------Plotting----------------------------------------------------------------
     plt.close(1); plt.figure(1, figsize=(8, 6))
 
     plt.subplot(311)
