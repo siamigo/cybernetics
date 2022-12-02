@@ -59,6 +59,7 @@ Test video - System identification          |  Test video - Optimal State Estima
 * [Python](https://www.python.org/)
 
 * [MATLAB](https://se.mathworks.com/products/matlab.html)
+* [Siemens NX](https://www.plm.automation.siemens.com/global/en/products/nx/)
 
 
 ## Authors
