@@ -4,7 +4,7 @@ def main():
 
 #------------------------------------ Filehandling ------------------------------------
     dRaw, vRaw, aRaw, _ = readFileComma('Optimal_state\calibrationdata\calibR_data.csv')
-    dRawQ, vRawQ, aRawQ, _ = readFileComma('Optimal_state\calibrationdata\calibQ_data.csv')
+    dRawQ, vRawQ, aRawQ, _ = readFileComma('Optimal_state\calibrationdata\calibQ_data1.csv')
     dis, vel, acc, _, _, _, time = readFileComma('Optimal_state\kalman_data\kalman_data.csv')
 #------------------------------------ Accelerometer gravity correction ------------------------------------
     accR, _ = sensorError(aRaw)

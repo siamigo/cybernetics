@@ -2,17 +2,17 @@ from funtions.functions import *
 
 def main():
 
-    DEBUG = True #Print values and add a delay
-    plotGraph = False #Plot the graph
+    DEBUG = False #Print values and add a delay
+    plotGraph = True #Plot the graph
     delay = 0.25
     ar = 9.2 / 2 #axle radius in mm
 #----------------------------------------------------------------Filehandling----------------------------------------------------------------
     dRaw, vRaw, aRaw, _ = readFileComma('Optimal_state\calibrationdata\calibR_data.csv') # Read the test values from a file
-    dRawQ, vRawQ, aRawQ, _ = readFileComma('Optimal_state\calibrationdata\calibQ_data.csv')
+    dRawQ, vRawQ, aRawQ, _ = readFileComma('Optimal_state\calibrationdata\calibQ_data1.csv')
 #---------------------------------------------------------------- Accelerometer gravity correction ----------------------------------------------------------------
     accR, avrR = sensorError(aRaw)
     accQ, avrQ = sensorError(aRawQ)
-    acc_error=(avrR+avrQ)/2
+    acc_error=avrR
 #---------------------------------------------------------------- Noize matrixes ----------------------------------------------------------------
 
     Q = cal_covar(dRawQ, vRawQ, accQ)
@@ -92,7 +92,7 @@ def main():
 
             if (stop == 0.) and plotGraph:
                 arr = np.concatenate((Yk[:,0], x_k[:,0], [dt]))
-                write_csv(arr, 'Optimal_state/kalman_data/kalman_data.csv')
+                write_csv(arr, 'Optimal_state/kalman_data/kalman_data3.csv')
 
         else:
             arduino_has_been_reset()

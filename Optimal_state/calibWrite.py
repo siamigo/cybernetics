@@ -13,8 +13,8 @@ def main():
     while(True):
         sensor_values = arduino_send_receive(prevAngle)
         if(sensor_values is not None):
-            v=(sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt
-            a=sensor_values[1]
+            v=round((sensor_values[0]*np.pi/180.0 - prevAngle*np.pi/180.0) * ar / dt, 3)
+            a=round(sensor_values[1] ,3)
             d=sensor_values[2]
             dt=sensor_values[3]
             stop=sensor_values[4]
@@ -29,7 +29,7 @@ def main():
                     firstPass = False
                 else:
                     arr=[delta_d, v, a, dt]
-                    write_csv(arr, 'Optimal_state/calibrationdata/calibQ_data.csv')
+                    write_csv(arr, 'Optimal_state/calibrationdata/calibQ_data1.csv')
         else:
             arduino_has_been_reset()
 
