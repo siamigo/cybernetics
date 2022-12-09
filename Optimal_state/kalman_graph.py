@@ -5,7 +5,7 @@ from funtions.functions import *
 def main():
     r_d, r_v, r_a, e_d, e_v, e_a, dt = readFileComma('Optimal_state\kalman_data\kalman_data3.csv')
 
-    time = plotTime(time)
+    time = plotTime(dt)
 
     plt.close(1); plt.figure(1, figsize=(8, 6))
 
