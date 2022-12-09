@@ -5,12 +5,7 @@ from funtions.functions import *
 def main():
     r_d, r_v, r_a, e_d, e_v, e_a, dt = readFileComma('Optimal_state\kalman_data\kalman_data3.csv')
 
-    time = []
-    for count, element in enumerate(dt):
-        if count == 0:
-            time.append(element)
-        else:
-            time.append(element+time[count-1])
+    time = plotTime(time)
 
     plt.close(1); plt.figure(1, figsize=(8, 6))
 
