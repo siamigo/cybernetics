@@ -7,7 +7,7 @@ def main():
 
     time = plotTime(dt)
 
-    plt.close(1); plt.figure(1, figsize=(8, 6))
+    plt.close(1); plt.figure(1, figsize=(16, 12))
 
     plt.subplot(311)
     plt.plot(time, r_d, label='$rd$', color='orange')
