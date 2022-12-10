@@ -4,7 +4,7 @@ The repository contains the files used to design a test rig for the course AIS22
 
 ## System identification
 
-The first assignment was to drop an egg from a height of 20 cm towards the ground in the fastest way possible without breaking the egg. The group then had to do *system identification* in order to estimate the system parameters.
+The first assignment was to drop an egg from a height of 20 cm towards the ground in the fastest time possible without breaking the egg. The group then had to do use *system identification* in order to estimate the system parameters.
 
 ![](docs/Media/Egg_drop.gif)  
 
@@ -12,7 +12,7 @@ The first assignment was to drop an egg from a height of 20 cm towards the groun
 
 ## Optimal State Estimation
 
-The second assignment was to use *optimal state estimation* in order to estimate the height above ground. A Kalman filter was used for sensor fusion.
+The second assignment was to use *optimal state estimation* in order to estimate the sensor values. A Kalman filter was used for sensor fusion.
 
 ![](docs/Media/kalman_ope.gif)
 
@@ -55,9 +55,7 @@ Test video - System identification          |  Test video - Optimal State Estima
 ### Software
 
 * [Arduino](https://www.arduino.cc/)
-
 * [Python](https://www.python.org/)
-
 * [MATLAB](https://se.mathworks.com/products/matlab.html)
 * [Siemens NX](https://www.plm.automation.siemens.com/global/en/products/nx/)
 
