@@ -10,12 +10,12 @@ message: >-
   metadata from this file.
 type: software
 authors:
-  - given-names: Karl Johan
-    family-names: Alvestad
   - given-names: Joakim Sander
     family-names: Løken
   - given-names: Jørgen
     family-names: Rottem
+  - given-names: Karl Johan
+    family-names: Alvestad
 version: 1.0.126
 date-released: 2021-11-06
 url: "https://github.com/siamigo/cybernetics"
