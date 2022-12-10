@@ -9,9 +9,14 @@ def main():
 #------------------------------------ Accelerometer gravity correction ------------------------------------
     accR, _ = sensorError(aRaw)
     accQ, _ = sensorError(aRawQ)
-#------------------------------------Noize matrixes-------------------------------------
-    Q = cal_covar(dRawQ, vRawQ, accQ)
-    R = cal_covar(dRaw, vRaw, accR)
+#------------------------------------Noize matrices - With covariance matrices-------------------------------------
+    # Q = cal_covar(dRawQ, vRawQ, accQ)
+    # R = cal_covar(dRaw, vRaw, accR)
+
+#------------------------------------Noize matrices - Manual tuned-------------------------------------
+    Q = 0.5*np.identity(3)
+
+    R = 2*np.identity(3)
 #------------------------------------Initial values ------------------------------------
     dt = .032
 
@@ -71,7 +76,6 @@ def main():
     t_time = plotTime(time)
 
     plt.close(1); plt.figure(1, figsize=(8, 6))
-
     plt.subplot(311)
     plt.plot(t_time, r_d, label='$rd$', color='orange')
     plt.plot(t_time, e_d, label='$ed$', color='blue')
@@ -79,21 +83,19 @@ def main():
     plt.xlabel(r'Time[s]')
     plt.title('Sensor estimate and real values')
     plt.legend()
-
     plt.subplot(312)
     plt.plot(t_time, r_v, label='$rv$', color='orange')
     plt.plot(t_time, e_v, label='$ev$', color='blue')
     plt.ylabel(r'Velocity [mm/s]')
     plt.xlabel(r'Time[s]')
     plt.legend()
-
     plt.subplot(313)
     plt.plot(t_time, r_a, label='$ra$', color='orange')
     plt.plot(t_time, e_a, label='$ea$', color='blue')
     plt.ylabel(r'Acceleration $[m/s^2]$')
     plt.xlabel(r'Time[s]')
     plt.legend()
-
+    
     plt.show()
 
 if __name__ == '__main__':

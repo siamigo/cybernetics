@@ -3,7 +3,7 @@ from funtions.functions import *
 def main():
 
     DEBUG = False #Print values and add a delay
-    plotGraph = True #Plot the graph
+    plotGraph = True #Stores the data in a csv file to plot the data.
     delay = 0.25
     ar = 9.2 / 2 #axle radius in mm
 #----------------------------------------------------------------Filehandling----------------------------------------------------------------
@@ -13,10 +13,13 @@ def main():
     accR, avrR = sensorError(aRaw)
     accQ, avrQ = sensorError(aRawQ)
     acc_error=avrR
-#---------------------------------------------------------------- Noize matrixes ----------------------------------------------------------------
+#------------------------------------Noize matrices - With covariance matrices-------------------------------------
+    # Q = cal_covar(dRawQ, vRawQ, accQ)
+    # R = cal_covar(dRaw, vRaw, accR)
 
-    Q = cal_covar(dRawQ, vRawQ, accQ)
-    R = cal_covar(dRaw, vRaw, accR) 
+#------------------------------------Noize matrices - Manual tuned-------------------------------------
+    Q = 0.5*np.identity(3)
+    R = 2*np.identity(3)
 
     if DEBUG:
         print("R: ")
