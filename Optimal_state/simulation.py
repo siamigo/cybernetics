@@ -13,9 +13,8 @@ def main():
     # Q = cal_covar(dRawQ, vRawQ, accQ)
     # R = cal_covar(dRaw, vRaw, accR)
 
-#------------------------------------Noize matrices - Manual tuned-------------------------------------
+#------------------------------------Noize matrices - Manual tuning-------------------------------------
     Q = 0.5*np.identity(3)
-
     R = 2*np.identity(3)
 #------------------------------------Initial values ------------------------------------
     dt = .032
@@ -75,7 +74,7 @@ def main():
 #------------------------------------ Plotting ------------------------------------
     t_time = plotTime(time)
 
-    plt.close(1); plt.figure(1, figsize=(8, 6))
+    plt.close(1); plt.figure(1, figsize=(16, 12))
     plt.subplot(311)
     plt.plot(t_time, r_d, label='$rd$', color='orange')
     plt.plot(t_time, e_d, label='$ed$', color='blue')
@@ -95,7 +94,7 @@ def main():
     plt.ylabel(r'Acceleration $[m/s^2]$')
     plt.xlabel(r'Time[s]')
     plt.legend()
-    
+
     plt.show()
 
 if __name__ == '__main__':

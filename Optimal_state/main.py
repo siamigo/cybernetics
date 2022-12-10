@@ -7,20 +7,21 @@ def main():
     delay = 0.25
     ar = 9.2 / 2 #axle radius in mm
 #----------------------------------------------------------------Filehandling----------------------------------------------------------------
-    dRaw, vRaw, aRaw, _ = readFileComma('Optimal_state\calibrationdata\calibR_data.csv') # Read the test values from a file
+    dRaw, vRaw, aRaw, _ = readFileComma('Optimal_state\calibrationdata\calibR_data.csv')
     dRawQ, vRawQ, aRawQ, _ = readFileComma('Optimal_state\calibrationdata\calibQ_data1.csv')
 #---------------------------------------------------------------- Accelerometer gravity correction ----------------------------------------------------------------
     accR, avrR = sensorError(aRaw)
-    accQ, avrQ = sensorError(aRawQ)
+    accQ, _ = sensorError(aRawQ)
     acc_error=avrR
 #------------------------------------Noize matrices - With covariance matrices-------------------------------------
     # Q = cal_covar(dRawQ, vRawQ, accQ)
     # R = cal_covar(dRaw, vRaw, accR)
 
-#------------------------------------Noize matrices - Manual tuned-------------------------------------
+#------------------------------------Noize matrices - Manual tuning-------------------------------------
     Q = 0.5*np.identity(3)
     R = 2*np.identity(3)
 
+#------------------------------------Debug-------------------------------------
     if DEBUG:
         print("R: ")
         print(R)
